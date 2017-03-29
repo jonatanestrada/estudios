@@ -1,0 +1,87 @@
+body{
+	font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+}
+
+table{
+	
+	font-size: 13px;
+}
+
+.titleTable{	
+    background-color: #70AD47;
+	color: white;
+	text-align: center;
+
+}
+
+.bordes, .bordesCeldasNumeros, .bordesCeldasNumerosAbajo{
+    border-style: solid;
+    border-width: 1px;
+    border-color: #BFBFBF;
+}
+
+.bordeLeft{
+	border-left-style: solid !important;
+    border-left-width: 1px !important;
+    border-left-color: #BFBFBF !important;
+}
+
+.bordesCeldasNumeros{
+	border-left: none; 
+	border-bottom: none;
+}
+
+.nivelAlertaNormal{
+	background-color: #FFECB7;
+	font-weight: bold;
+}
+
+.nivelAlerta100{
+	background-color: #F2F2F2;
+	color: #A5A5A5;
+}
+
+.nivelAlertaSobrepaso{
+	background-color: #D9E2F3;
+	color: #4472C4;
+}
+
+.nivelAlertaMuyporDebajo{
+	background-color: #FEBEBE;
+}
+
+.celdasNumeros{
+	width: 31px;
+	text-align: center;
+}
+
+.bold{
+	font-weight: bold;	
+}
+
+.bordesCeldasNumerosAbajo{
+	border-left: none;
+}
+
+.sinBordeAbajo{
+	border-bottom: none;
+}
+
+.celdasNumerosSolo1Col{
+	width: 65px;
+	text-align: center;
+}
+
+.bordeCeldaFirstIzq{
+	border-top: none;
+	border-right:none;
+}
+
+.bordeCeldaLastDer{
+	border-top: none;
+	border-left:none;
+}
+
+.alinIza{
+	text-align: left;
+}
