@@ -1,189 +1,261 @@
 <?php
-include_once "classes/Estudio.class.php";
-include_once "date_functions.php";
-
-date_default_timezone_set('America/Mexico_City');
-
-/*$cadena = "2/22/2007 00:00:00";
-$cadena = strtotime($cadena);
-$cadena = date("d-m-y", $cadena);
-echo $cadena."<br />";
-// devuelve 23:45
-$cadena = "10:45 pm";
-$cadena = strtotime($cadena);
-$cadena = date("H:i", $cadena);
-echo $cadena."<br />";
-// devuelve 22:45
-$cadena = "9:45 PM";
-$cadena = strtotime($cadena);
-$cadena = date("H:i", $cadena);
-echo $cadena."<br />";
-// devuelve 21:45
-$cadena = "08:45 a.m.";
-$cadena = strtotime($cadena);
-$cadena = date("H:i", $cadena);
-echo $cadena."<br />";
-// devuelve 08:45 
-$cadena = "20:45:00";
-$cadena = strtotime($cadena);
-$cadena = date("H:i", $cadena);
-echo $cadena."<br />";
-// sigue siendo 20:45 pero sin segundos 
-exit;*/
-
+$diasEstudios[] = array('dia'=>26, 'mes'=>'feb', 'noEstudios' => '1104');
+$diasEstudios[] = array('dia'=>27, 'mes'=>'feb', 'noEstudios' => '1847');
+$diasEstudios[] = array('dia'=>28, 'mes'=>'feb', 'noEstudios' => '1725');
+$diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 ?>
+<!DOCTYPE html>
+ <html lang="es">
+	 <head>
+		<title>Paridad Synapse - BDE</title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" type="text/css" href="css/style.css" media="screen" />
+	</head>
+ 
+	<body>
+		<img src='images/logo.png' style='float:right;'>
 
-<table border=1>
-	<tr>
-		<td>Base</td>
-		<td>Patient ID</td>
-		<td>Accession No</td>
-		<td>Modality</td>
-		<td>Status</td>
-		<td>Procedure Code</td>
-		<td>Image Count</td>
-		<td>Patient Name</td>
-		<td>Study Date Time	Last</td>
-		<td>Modified Timestamp</td>
-		<td>Birth Date</td>
-		<td>Gender</td>
-		<td>Image Sender</td>
-		<td>Clave</td>
-		<td>Clave-Mod</td>
-		<td>SD</td>
-	</tr>
+		<div style='color: #595959; width: 300px;text-align: center;' >
+			<p style='font-weight: bold;font-size: 20px;margin-bottom: 0px;'>Ejercicio de Paridad Synapse - BDE</p>
+			<p style='margin-top: 5px;font-size: 23px;margin-bottom: 0px;'>Jali</p>
+			<p style='margin-top: 0px;font-size: 20px;margin-bottom: 5px;'>Corte al Martes, 28-Mar-17</p>
+		</div>
 
-<?php // Ejemplo aprenderaprogramar.com
-// Iremos leyendo línea a línea del fichero.txt hasta llegar al fin (feof($fp))
-// fichero.txt tienen que estar en la misma carpeta que el fichero php
-// fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
+		<hr style='border-style: solid; border-color: #BBD78B; margin-top: 0px;margin-bottom: 15px;'>
 
+		<div style="text-align:center;'">
+			<table cellpadding="0" cellspacing="0" style='margin: auto;'>
+				<tr>
+					<td style='width: 105px; height: 20px;'>&nbsp;</td>
+					<td style='width: 220px;'>&nbsp;</td>
+					<td></td>
+					<?php 
+					foreach( $diasEstudios as $d ){
+						echo '<td class="celdasNumeros bold">'.$d['dia'].'</td>';
+					}
+					?>
+					<td style='width: 10px;'></td>
+					<td rowspan=2 class='bold celdasNumerosSolo1Col' style='vertical-align: bottom;' >Total</td>
+				</tr>
+				<tr>
+					<td >Clave</td>
+					<td>Hospital</td>
+					<td></td>
+					<?php 
+					foreach( $diasEstudios as $d ){
+						echo '<td class="celdasNumeros bold">'.$d['mes'].'</td>';
+					}
+					?>
+				</tr>
+				<tr>
+				<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td class='titleTable bordes' style='border-right: none; border-bottom: none;' >Total</td>
+					<td class='titleTable bordes' style='border-left: none; border-bottom: none;' >ISEM</td>
+					<td style='width: 20px;'></td>
+					<td class='nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>96%</td>
+					<td class='nivelAlertaSobrepaso celdasNumeros bordesCeldasNumeros'>105%</td>
+					<td class='nivelAlertaMuyporDebajo celdasNumeros bordesCeldasNumeros'>0%</td>
+					<td class='nivelAlerta100 celdasNumeros bordesCeldasNumeros'>100%</td>
+					<td></td>
+					<td class='nivelAlertaNormal bordes sinBordeAbajo celdasNumerosSolo1Col'>100%</td>
+				</tr>
+				
+				<tr>
+					<td class='bordes' style='border-bottom: none; border-right: none; ' ></td>		
+					<td class='bordes alinIza' style='border-bottom: none; border-left: none; ' >Synapse - Central</td>
+					<td></td>
+					<?php 
+					$i = 0;
+					foreach( $diasEstudios as $d ){
+						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
+						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumeros">'.$d['noEstudios'].'</td>';
+					}
+					?>
+					<td></td>
+					<td class='bordes sinBordeAbajo celdasNumerosSolo1Col'>33.05</td>
+				</tr>
+				</tr>
+				
+				<tr>
+					<td class='bordes ' style='border-right: none; border-top: none;' ></td>		
+					<td class='bordes alinIza' style='border-left: none; border-top: none;' >BDE - Central</td>
+					<td></td>
+					<?php 
+					$i = 0;
+					foreach( $diasEstudios as $d ){
+						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
+						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumerosAbajo">'.$d['noEstudios'].'</td>';
+					}
+					?>
+					<td></td>
+					<td class='bordes celdasNumerosSolo1Col'>33.56</td>
+				</tr>
+				
+				<tr>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+					<tr>
+					<td colspan=2 rowspan = 2 style='text-align: center; font-size: 18px; font-weight: bold; border: solid; border: none;  border-bottom: solid; border-color: #70AD47;'>
+						Detalle Por Modalidad
+					</td>
+					<td></td>
+					<?php 
+						foreach( $diasEstudios as $d ){
+							echo '<td class="celdasNumeros bold">'.$d['dia'].'</td>';
+						}
+					?>
+					<td style='width: 10px;'></td>
+					<td rowspan=2 class='bold celdasNumerosSolo1Col' style='vertical-align: bottom;'>Total</td>
+				</tr>
+				
+				<tr>
+					<td></td>
+					<?php 
+						foreach( $diasEstudios as $d ){
+							echo '<td class="celdasNumeros bold">'.$d['mes'].'</td>';
+						}
+					?>		
+				</tr>
 
+				<tr>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
 
+				<tr>
+					<td style='text-align:center; background-color: #E2EFDA; border-right: none;' class='bordes' >
+						CR
+					</td>
+					<td style='background-color: #E2EFDA; border-left: none;' class='bordes'>
+						Placas Simples
+					</td>
+					<td></td>
+					<td class='nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>96%</td>
+					<td class='nivelAlertaSobrepaso celdasNumeros bordesCeldasNumeros'>105%</td>
+					<td class='nivelAlertaMuyporDebajo celdasNumeros bordesCeldasNumeros'>0%</td>
+					<td class='nivelAlerta100 celdasNumeros bordesCeldasNumeros'>100%</td>
+					<td></td>
+					<td class='nivelAlertaNormal bordes sinBordeAbajo celdasNumerosSolo1Col'>100%</td>		
+				</tr>
+				
+				<tr>
+					<td class='bordes bordeCeldaFirstIzq' style='border-bottom: none;' ></td>
+					<td class='bordes bordeCeldaLastDer alinIza' style='border-bottom: none;' >Synapse - Central</td>
+					<td></td>
+					<?php 
+					$i = 0;
+					foreach( $diasEstudios as $d ){
+						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
+						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumeros">'.$d['noEstudios'].'</td>';
+					}
+					?>
+					<td></td>
+					<td class='bordes sinBordeAbajo celdasNumerosSolo1Col'>33.05</td>		
+				</tr>
+				<tr>
+					<td class='bordes bordeCeldaFirstIzq'></td>
+					<td class='bordes bordeCeldaLastDer alinIza'>DBE - Central</td>
+					<td></td>
+					<?php 
+					$i = 0;
+					foreach( $diasEstudios as $d ){
+						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
+						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumerosAbajo">'.$d['noEstudios'].'</td>';
+					}
+					?>
+					<td></td>
+					<td class='bordes celdasNumerosSolo1Col'>33.56</td>
+				</tr>
+				
+				
+				
+					<tr>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+					<tr>
+					<td colspan=2 rowspan = 2 style='text-align: center; font-size: 18px; font-weight: bold; border: solid; border: none;  border-bottom: solid; border-color: #70AD47;'>
+						Detalle Por Hospital
+					</td>
+					<td></td>
+					<?php 
+						foreach( $diasEstudios as $d ){
+							echo '<td class="celdasNumeros bold">'.$d['dia'].'</td>';
+						}
+					?>
+					<td style='width: 10px;'></td>
+					<td rowspan=2 class='bold celdasNumerosSolo1Col' style='vertical-align: bottom;'>Total</td>
+				</tr>
+				
+				<tr>
+					<td></td>
+					<?php 
+						foreach( $diasEstudios as $d ){
+							echo '<td class="celdasNumeros bold">'.$d['mes'].'</td>';
+						}
+					?>		
+				</tr>
 
-$fp = fopen("registros.txt", "r");
-while(!feof($fp)) {
-	$linea = fgets($fp);
-	if( trim($linea) != '' )
-		{
-			$fields = getFields($linea);
-			echo writeRowHTML( $fields );
-			//saveEstudioDB( $fields );
-	}
-}
-fclose($fp);
-?>
+				<tr>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
 
-</table>
+				<tr>
+					<td style='text-align:center; background-color: #EDEDED; border-right: none;' class='bordes' >
+						ISEM01
+					</td>
+					<td style='background-color: #EDEDED; border-left: none;' class='bordes'>
+						HG DR FERNANDO QUIROZ G
+					</td>
+					<td></td>
+					<td class='nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>96%</td>
+					<td class='nivelAlertaSobrepaso celdasNumeros bordesCeldasNumeros'>105%</td>
+					<td class='nivelAlertaMuyporDebajo celdasNumeros bordesCeldasNumeros'>0%</td>
+					<td class='nivelAlerta100 celdasNumeros bordesCeldasNumeros'>100%</td>
+					<td></td>
+					<td class='nivelAlertaNormal bordes sinBordeAbajo celdasNumerosSolo1Col'>100%</td>		
+				</tr>
+				
+				<tr>
+					<td class='bordes bordeCeldaFirstIzq' style='border-bottom: none;' ></td>
+					<td class='bordes bordeCeldaLastDer alinIza' style='border-bottom: none;' >Synapse - Central</td>
+					<td></td>
+					<?php 
+					$i = 0;
+					foreach( $diasEstudios as $d ){
+						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
+						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumeros">'.$d['noEstudios'].'</td>';
+					}
+					?>
+					<td></td>
+					<td class='bordes sinBordeAbajo celdasNumerosSolo1Col'>33.05</td>		
+				</tr>
+				<tr>
+					<td class='bordes bordeCeldaFirstIzq'></td>
+					<td class='bordes bordeCeldaLastDer alinIza' >DBE - Central</td>
+					<td></td>
+					<?php 
+					$i = 0;
+					foreach( $diasEstudios as $d ){
+						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
+						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumerosAbajo">'.$d['noEstudios'].'</td>';
+					}
+					?>
+					<td></td>
+					<td class='bordes celdasNumerosSolo1Col'>33.56</td>
+				</tr>
+				
+				
+			</table>
+		</div>
 
-
-<?php
-
-function saveEstudioDB( $data ){
-	$estudio = new Estudio();
-	$estudio->add( $data );
-}
-
-function writeRowHTML( $fields ){
-	$html = '<tr>';
-	$html .= '<td>'.getFieldBase( $fields ).'</td>';
-	$html .= '<td>'.$fields['patient_ID'].'</td>';
-	$html .= '<td>'.$fields['accession_No'].'</td>';
-	$html .= '<td>'.$fields['modality'].'</td>';
-	$html .= '<td>'.$fields['status'].'</td>';
-	$html .= '<td>'.$fields['procedure_Code'].'</td>';
-	$html .= '<td>'.$fields['image_Count'].'</td>';
-	$html .= '<td>'.$fields['patient_Name'].'</td>';
-	$html .= '<td>'.$fields['study_Date_Time_Last'].'</td>';
-	$html .= '<td>'.$fields['last_Modified'].'</td>';
-	$html .= '<td>'.getFormatDDMMYYHHSS($fields['birth_Date']).'</td>';
-	$html .= '<td>'.$fields['gender'].'</td>';
-	$html .= '<td>'.$fields['imageSender'].'</td>';
-	$html .= '<td>'.$fields['clave'].'</td>';
-	$html .= '<td>'.getFieldClaveMod( $fields ).'</td>';
-	$html .= '<td>'.getFormatDDMMYYHHSS($fields['study_Date_Time_Last']).'</td>';
-	$html .= '</tr>';
-	return $html;
-}
-
-function getFieldClaveMod( $fields ){
-	return $fields['clave'].'-'.$fields['modality'];
-}
-
-function getFIeldSD( $fields ){
-	return getUnixTime($fields['study_Date_Time_Last']);
-}
-
-
-
-function getFieldClave( $accession_No ){
-/*= SI(
-		NO(
-		
-		O(	
-			IZQUIERDA([@[Accession No]],4)="ISEM",
-			IZQUIERDA([@[Accession No]],4)="MICH",
-			IZQUIERDA([@[Accession No]],4)="JALI",
-			IZQUIERDA([@[Accession No]],4)="TLAX")
-		)
-		
-		,
-		"Sin Clave",
-		IZQUIERDA([@[Accession No]],6)
-	)*/
-	$proyecto = substr( $accession_No, 0, 4);
-
-	$patron1 = "/ISEM/i";
-	$patron2 = "/MICH/i";
-	$patron3 = "/JALI/i";
-	$patron4 = "/TLAX/i";
-	
-	if ( preg_match($patron1, $proyecto) OR preg_match($patron2, $proyecto) OR preg_match($patron3, $proyecto) ) {
-		$clave = substr( $accession_No, 0, 6);
-		return $clave;
-	}
-	else
-		return 'Sin Clave';
-}
-
-function getFieldBase( $fields ){
-/*= SI( Y 
-		(SI.ERROR(NO(
-			HALLAR("test",[@[Patient Name]])=0),FALSO)=FALSO,SI.ERROR(NO(
-			HALLAR("prueba",[@[Patient Name]])=0),FALSO)=FALSO,SI.ERROR(NO(
-			HALLAR("hova",[@[Patient Name]])=0),FALSO)=FALSO,NO(O([@Status]="Status",[@Status]="Cancel",*/
-			
-	$cadena1 = $fields['patient_Name'];
-	$patron1 = "/test/i";
-	$patron2 = "/prueba/i";
-	$patron3 = "/hova/i";
-	
-	if ( preg_match($patron1, $cadena1) OR preg_match($patron2, $cadena1) OR preg_match($patron3, $cadena1) ) {
-		return 'Eliminado';
-	}
-	else
-		return 'Validado';
-	
-}
-
-function getFields( $line ){
-	$l = explode("\t", $line );
-
-	$fields['patient_ID']			= $l[0];
-	$fields['accession_No']			= $l[1];
-	$fields['modality']				= $l[2];
-	$fields['status']				= $l[3];
-	$fields['procedure_Code']		= $l[4];
-	$fields['image_Count']			= $l[5];
-	$fields['patient_Name']			= $l[6];
-	$fields['study_Date_Time_Last']	= getUnixTime($l[7]);
-	$fields['last_Modified']		= getUnixTime($l[8]); 
-	$fields['birth_Date']			= ( trim($l[9]) != '' ) ? getUnixTime($l[9]." 00:00:00") : '';
-	$fields['gender']				= $l[10];
-	$fields['imageSender']			= $l[11];
-	$fields['clave']				= getFieldClave( $fields['accession_No'] );
-
-	return $fields;
-}
-
-?>
+	</body>
+</html>
