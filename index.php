@@ -1,8 +1,38 @@
 <?php
+include_once "classes/Estudio.class.php";
+date_default_timezone_set('America/Mexico_City');
 $diasEstudios[] = array('dia'=>26, 'mes'=>'feb', 'noEstudios' => '1104');
 $diasEstudios[] = array('dia'=>27, 'mes'=>'feb', 'noEstudios' => '1847');
 $diasEstudios[] = array('dia'=>28, 'mes'=>'feb', 'noEstudios' => '1725');
 $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
+
+$estudio = new Estudio();
+//$noEstudiosPorDia = $estudio->getNoEstudios( 30 );
+$noEstudiosPorDia = $estudio->getNoEstudios2( 30 );
+
+$detallePorModalidad = $estudio->getDetallePorModalidad();
+
+$detallePorHospital = $estudio->getDetallePorHospital();
+
+//var_dump($detallePorHospital); exit;
+//echo $detallePorHospital['2017-02-27']['ISEM01']['noEstudios']; exit;
+
+$hospitales = $estudio->getHospitales();
+
+$modalidades = $estudio->getModalities();
+
+
+
+/*foreach( $detallePorModalidad AS $d ){
+	echo $d['alias'].'<br>';
+}
+exit;*/
+/*var_dump($noEstudiosPorDia);
+
+foreach( $noEstudiosPorDia AS $e ){
+	echo $e['ForDate'].'<br>';
+}
+exit;*/
 ?>
 <!DOCTYPE html>
  <html lang="es">
@@ -30,9 +60,14 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 					<td style='width: 220px;'>&nbsp;</td>
 					<td></td>
 					<?php 
-					foreach( $diasEstudios as $d ){
-						echo '<td class="celdasNumeros bold">'.$d['dia'].'</td>';
+					foreach( $noEstudiosPorDia AS $e ){
+						$dia = date("d", strtotime($e['fecha']));
+						echo '<td class="celdasNumeros bold">'.$dia.'</td>';
 					}
+					
+					/*foreach( $diasEstudios as $d ){
+						echo '<td class="celdasNumeros bold">'.$d['dia'].'</td>';
+					}*/
 					?>
 					<td style='width: 10px;'></td>
 					<td rowspan=2 class='bold celdasNumerosSolo1Col' style='vertical-align: bottom;' >Total</td>
@@ -42,8 +77,9 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 					<td>Hospital</td>
 					<td></td>
 					<?php 
-					foreach( $diasEstudios as $d ){
-						echo '<td class="celdasNumeros bold">'.$d['mes'].'</td>';
+					foreach( $noEstudiosPorDia AS $e ){
+						$mes = date("M", strtotime($e['fecha']));
+						echo '<td class="celdasNumeros bold">'.$mes.'</td>';
 					}
 					?>
 				</tr>
@@ -54,10 +90,15 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 					<td class='titleTable bordes' style='border-right: none; border-bottom: none;' >Total</td>
 					<td class='titleTable bordes' style='border-left: none; border-bottom: none;' >ISEM</td>
 					<td style='width: 20px;'></td>
-					<td class='nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>96%</td>
+					<?php
+					/*<td class='nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>96%</td>
 					<td class='nivelAlertaSobrepaso celdasNumeros bordesCeldasNumeros'>105%</td>
 					<td class='nivelAlertaMuyporDebajo celdasNumeros bordesCeldasNumeros'>0%</td>
-					<td class='nivelAlerta100 celdasNumeros bordesCeldasNumeros'>100%</td>
+					<td class='nivelAlerta100 celdasNumeros bordesCeldasNumeros'>100%</td>*/
+						foreach( $noEstudiosPorDia AS $e ){
+							echo "<td class='nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>96%</td>";
+						}
+					?>
 					<td></td>
 					<td class='nivelAlertaNormal bordes sinBordeAbajo celdasNumerosSolo1Col'>100%</td>
 				</tr>
@@ -68,9 +109,10 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 					<td></td>
 					<?php 
 					$i = 0;
-					foreach( $diasEstudios as $d ){
+					foreach( $noEstudiosPorDia AS $e ){
+						//$mes = date("M", strtotime($e['fecha']));
 						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
-						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumeros">'.$d['noEstudios'].'</td>';
+						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumeros">'.'%%'.'</td>';
 					}
 					?>
 					<td></td>
@@ -84,13 +126,15 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 					<td></td>
 					<?php 
 					$i = 0;
-					foreach( $diasEstudios as $d ){
-						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
-						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumerosAbajo">'.$d['noEstudios'].'</td>';
+					$sumaNoEstudios = 0;
+						foreach( $noEstudiosPorDia AS $e ){
+						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';						
+						$sumaNoEstudios += $e['noEstudios'];						
+						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumerosAbajo">'.number_format($e['noEstudios']).'</td>';
 					}
 					?>
 					<td></td>
-					<td class='bordes celdasNumerosSolo1Col'>33.56</td>
+					<td class='bordes celdasNumerosSolo1Col'><?php echo number_format($sumaNoEstudios); ?></td>
 				</tr>
 				
 				<tr>
@@ -104,9 +148,10 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 					</td>
 					<td></td>
 					<?php 
-						foreach( $diasEstudios as $d ){
-							echo '<td class="celdasNumeros bold">'.$d['dia'].'</td>';
-						}
+					foreach( $noEstudiosPorDia AS $e ){
+						$dia = date("d", strtotime($e['fecha']));
+						echo '<td class="celdasNumeros bold">'.$dia.'</td>';
+					}
 					?>
 					<td style='width: 10px;'></td>
 					<td rowspan=2 class='bold celdasNumerosSolo1Col' style='vertical-align: bottom;'>Total</td>
@@ -115,10 +160,11 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 				<tr>
 					<td></td>
 					<?php 
-						foreach( $diasEstudios as $d ){
-							echo '<td class="celdasNumeros bold">'.$d['mes'].'</td>';
-						}
-					?>		
+					foreach( $noEstudiosPorDia AS $e ){
+						$mes = date("M", strtotime($e['fecha']));
+						echo '<td class="celdasNumeros bold">'.$mes.'</td>';
+					}
+					?>
 				</tr>
 
 				<tr>
@@ -127,18 +173,21 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 					</td>
 				</tr>
 
+				<?php foreach( $modalidades AS $d ): ?>
+						
 				<tr>
 					<td style='text-align:center; background-color: #E2EFDA; border-right: none;' class='bordes' >
-						CR
+						<?php echo $d['alias']; ?>
 					</td>
-					<td style='background-color: #E2EFDA; border-left: none;' class='bordes'>
-						Placas Simples
+					<td style='text-align:left; background-color: #E2EFDA; border-left: none;' class='bordes'>
+						<?php echo $d['modalidad']; ?>
 					</td>
 					<td></td>
-					<td class='nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>96%</td>
-					<td class='nivelAlertaSobrepaso celdasNumeros bordesCeldasNumeros'>105%</td>
-					<td class='nivelAlertaMuyporDebajo celdasNumeros bordesCeldasNumeros'>0%</td>
-					<td class='nivelAlerta100 celdasNumeros bordesCeldasNumeros'>100%</td>
+					
+					<?php foreach( $detallePorModalidad as $de ): ?>
+						<td class='nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>%</td>
+					<?php endforeach; ?>
+					
 					<td></td>
 					<td class='nivelAlertaNormal bordes sinBordeAbajo celdasNumerosSolo1Col'>100%</td>		
 				</tr>
@@ -149,9 +198,9 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 					<td></td>
 					<?php 
 					$i = 0;
-					foreach( $diasEstudios as $d ){
+					foreach( $diasEstudios as $di ){
 						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
-						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumeros">'.$d['noEstudios'].'</td>';
+						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumeros">'.$di['noEstudios'].'</td>';
 					}
 					?>
 					<td></td>
@@ -161,33 +210,40 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 					<td class='bordes bordeCeldaFirstIzq'></td>
 					<td class='bordes bordeCeldaLastDer alinIza'>DBE - Central</td>
 					<td></td>
+					
 					<?php 
 					$i = 0;
-					foreach( $diasEstudios as $d ){
+					$sumaNoEstudiosModalidad = 0;
+					foreach( $detallePorModalidad as $de ){
 						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
-						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumerosAbajo">'.$d['noEstudios'].'</td>';
+						$noEstudios = ( isset( $de[$d['alias']]['noEstudios'] ) ) ? number_format($de[$d['alias']]['noEstudios']): '-';
+						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumerosAbajo">'.$noEstudios.'</td>';
+						$sumaNoEstudiosModalidad += $de[$d['alias']]['noEstudios'];
 					}
 					?>
 					<td></td>
-					<td class='bordes celdasNumerosSolo1Col'>33.56</td>
+					<td class='bordes celdasNumerosSolo1Col'><?php echo number_format($sumaNoEstudiosModalidad); ?></td>
 				</tr>
 				
+				<?php endforeach; ?>
 				
 				
-					<tr>
+
+				<tr>
 					<td>
 						&nbsp;
 					</td>
 				</tr>
-					<tr>
+				<tr>
 					<td colspan=2 rowspan = 2 style='text-align: center; font-size: 18px; font-weight: bold; border: solid; border: none;  border-bottom: solid; border-color: #70AD47;'>
 						Detalle Por Hospital
 					</td>
 					<td></td>
 					<?php 
-						foreach( $diasEstudios as $d ){
-							echo '<td class="celdasNumeros bold">'.$d['dia'].'</td>';
-						}
+					foreach( $noEstudiosPorDia AS $e ){
+						$dia = date("d", strtotime($e['fecha']));
+						echo '<td class="celdasNumeros bold">'.$dia.'</td>';
+					}
 					?>
 					<td style='width: 10px;'></td>
 					<td rowspan=2 class='bold celdasNumerosSolo1Col' style='vertical-align: bottom;'>Total</td>
@@ -196,10 +252,11 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 				<tr>
 					<td></td>
 					<?php 
-						foreach( $diasEstudios as $d ){
-							echo '<td class="celdasNumeros bold">'.$d['mes'].'</td>';
-						}
-					?>		
+					foreach( $noEstudiosPorDia AS $e ){
+						$mes = date("M", strtotime($e['fecha']));
+						echo '<td class="celdasNumeros bold">'.$mes.'</td>';
+					}
+					?>
 				</tr>
 
 				<tr>
@@ -208,18 +265,24 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 					</td>
 				</tr>
 
+				<?php foreach( $hospitales as $h ): ?>
 				<tr>
 					<td style='text-align:center; background-color: #EDEDED; border-right: none;' class='bordes' >
-						ISEM01
+						<?php echo $h['clave']; ?>
 					</td>
-					<td style='background-color: #EDEDED; border-left: none;' class='bordes'>
-						HG DR FERNANDO QUIROZ G
+					<td style='text-align:left;background-color: #EDEDED; border-left: none;' class='bordes'>
+						<?php echo $h['nombre']; ?>
 					</td>
 					<td></td>
-					<td class='nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>96%</td>
+					<?php
+					/*<td class='nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>96%</td>
 					<td class='nivelAlertaSobrepaso celdasNumeros bordesCeldasNumeros'>105%</td>
 					<td class='nivelAlertaMuyporDebajo celdasNumeros bordesCeldasNumeros'>0%</td>
-					<td class='nivelAlerta100 celdasNumeros bordesCeldasNumeros'>100%</td>
+					<td class='nivelAlerta100 celdasNumeros bordesCeldasNumeros'>100%</td>*/
+						foreach( $noEstudiosPorDia AS $e ){
+							echo "<td class='nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>%</td>";
+						}
+					?>
 					<td></td>
 					<td class='nivelAlertaNormal bordes sinBordeAbajo celdasNumerosSolo1Col'>100%</td>		
 				</tr>
@@ -230,13 +293,16 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 					<td></td>
 					<?php 
 					$i = 0;
-					foreach( $diasEstudios as $d ){
+					$sumaNoEstudiosModalidad = 0;
+					foreach( $detallePorModalidad as $de ){
 						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
-						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumeros">'.$d['noEstudios'].'</td>';
+						$noEstudios = ( isset( $de[$d['alias']]['noEstudios'] ) ) ? number_format($de[$d['alias']]['noEstudios']): '-';
+						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumerosAbajo">-'.''.'</td>';
+						$sumaNoEstudiosModalidad += $de[$d['alias']]['noEstudios'];
 					}
 					?>
 					<td></td>
-					<td class='bordes sinBordeAbajo celdasNumerosSolo1Col'>33.05</td>		
+					<td class='bordes celdasNumerosSolo1Col'>-<?php //echo number_format($sumaNoEstudiosModalidad); ?></td>
 				</tr>
 				<tr>
 					<td class='bordes bordeCeldaFirstIzq'></td>
@@ -244,15 +310,21 @@ $diasEstudios[] = array('dia'=>29, 'mes'=>'feb', 'noEstudios' => '-');
 					<td></td>
 					<?php 
 					$i = 0;
-					foreach( $diasEstudios as $d ){
-						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
-						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumerosAbajo">'.$d['noEstudios'].'</td>';
+					$sumaNoEstudiosHospital = 0;
+					foreach( $detallePorHospital as $deH ){
+					
+					//var_dump($de); exit;
+					
+						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : ''; //$detallePorHospital['2017-02-27']['ISEM01']['noEstudios']
+						$noEstudios = ( isset( $deH[$h['clave']]['noEstudios'] ) ) ? number_format($deH[$h['clave']]['noEstudios']): '-';
+						echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumerosAbajo">'.$noEstudios.'</td>';
+						$sumaNoEstudiosHospital += $deH[$h['clave']]['noEstudios'];
 					}
 					?>
 					<td></td>
-					<td class='bordes celdasNumerosSolo1Col'>33.56</td>
+					<td class='bordes celdasNumerosSolo1Col'><?php echo number_format($sumaNoEstudiosHospital); ?></td>
 				</tr>
-				
+				<?php endforeach; ?>
 				
 			</table>
 		</div>
