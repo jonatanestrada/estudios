@@ -4,15 +4,75 @@ error_reporting(E_ALL & ~E_NOTICE);
 include_once "base.api.php";
 include_once "Paginacion.class.php";
 
-class Estudio{
+class EstudioEspejo{
 
 var $db;
+var $proyecto;
 
-function __construct() {
-       $this->db = 'synapse_espejo_noc';
+function __construct( $proyecto ) {
+       $this->db = 'monitoreo_activo';
+	   $this->proyecto = $proyecto;
    }
 
-public function getHospitales(){
+public function getDetallePorHospital( $fechaInicioTs, $fechaFinTs ){
+	$fechaInicio = date ( 'Ymd' , $fechaInicioTs); 
+	$fechaFin = date ( 'Ymd' , $fechaFinTs); 
+
+	$whereProyecto = ( $this->proyecto != '' ) ? " SITIO LIKE '%".$this->proyecto."%' " : '1';
+
+	$sql = "SELECT consecutivo AS fecha, SITIO, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo <= '".$fechaFin."' AND SITIO != '' GROUP BY consecutivo, SITIO ORDER BY consecutivo" ;
+
+	DBO::select_db($this->db);
+	$a = DBO::getArray($sql);
+	
+	$estudios = array();
+	
+	foreach( $a as $e ){
+		$estudios[$e['fecha']][$e['SITIO']]  = $e;
+	}
+	
+	return $estudios;
+}
+   
+public function getDetallePorModalidad( $fechaInicioTs, $fechaFinTs ){
+	$fechaInicio = date ( 'Ymd' , $fechaInicioTs); 
+	$fechaFin = date ( 'Ymd' , $fechaFinTs); 
+
+	$whereProyecto = ( $this->proyecto != '' ) ? " SITIO LIKE '%".$this->proyecto."%' " : '1';
+	$sql = "SELECT consecutivo AS fecha, MODALIDAD, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo <= '".$fechaFin."' GROUP BY consecutivo, MODALIDAD";
+
+	DBO::select_db($this->db);
+	$a = DBO::getArray($sql);
+	
+	$estudios = array();
+	
+	foreach( $a as $e ){
+		$estudios[$e['fecha']][$e['MODALIDAD']]  = $e;
+	}
+	
+	return $estudios;
+}
+   
+public function getNoEstudios( $fechaInicioTs, $fechaFinTs ){
+	$fechaInicio = date ( 'Ymd' , $fechaInicioTs); 
+	$fechaFin = date ( 'Ymd' , $fechaFinTs); 
+
+	$whereProyecto = ( $this->proyecto != '' ) ? " SITIO LIKE '%".$this->proyecto."%' " : '1';
+	
+	$sql = "SELECT consecutivo AS fecha, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo <= '".$fechaFin."' GROUP BY consecutivo";
+	DBO::select_db($this->db);
+	$a = DBO::getArray($sql);
+	
+	$estudios = array();
+	
+	foreach( $a as $e ){
+		$estudios[$e['fecha']] = $e;
+	}	
+	
+	return $estudios;
+}
+   
+/*public function getHospitales(){
 	$sql = "SELECT * FROM hospital.hospital ORDER BY clave";
 
 	DBO::select_db($this->db);
@@ -33,7 +93,7 @@ public function getDetallePorHospital(){
 }
 
 public function getNoEstudiosPorHospital(){
-	echo $sql = "SELECT DATE(study_Date_Time) AS fecha, clave, COUNT(*) AS noEstudios FROM estudios WHERE study_Date_Time > '2017-02-27' AND study_Date_Time < '2017-03-29' GROUP BY DATE(study_Date_Time), clave ORDER BY fecha";
+	$sql = "SELECT DATE(study_Date_Time) AS fecha, clave, COUNT(*) AS noEstudios FROM estudios WHERE study_Date_Time > '2017-02-27' AND study_Date_Time < '2017-03-29' GROUP BY DATE(study_Date_Time), clave ORDER BY fecha";
 
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
@@ -85,7 +145,7 @@ public function getNoEstudios2( $noDias ){
 	$fechaInicio = strtotime ( '-'.$noDias.' day' , strtotime ( $hoy ) ) ;
 	$fechaInicio = date ( 'Y-m-d' , $fechaInicio); 
 
-	$sql = "SELECT DATE(study_Date_Time) AS fecha, COUNT(*) AS noEstudios FROM estudios WHERE study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$hoy."' GROUP BY DATE(study_Date_Time) ORDER BY fecha";
+	echo $sql = "SELECT DATE(study_Date_Time) AS fecha, COUNT(*) AS noEstudios FROM estudios WHERE study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$hoy."' GROUP BY DATE(study_Date_Time) ORDER BY fecha";
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
 	return $a;
@@ -121,51 +181,6 @@ public function getHorarioMiembro(){
 	$sql = "SELECT * FROM estudios LIMIT 10;";
 	DBO::select_db($this->db);
 	return DBO::getArray($sql);
-}
+}*/
    
-/*public function addMiembro( $datos ){
-	//$fn = explode("/", $datos['fecha_nacimiento']);
-	//var_dump($fn);
-	//$fecha_nacimiento = $fn[2].'-'.$fn[0].'-'.$fn[1].' 00:00:00';
-	//echo "$d, $m, $y";
-	$fecha_nacimiento = $datos['fecha_nacimiento'] == '' ? "NULL" : "'".$datos['fecha_nacimiento'].' 00:00:00'."'";
-	$fecha_ingreso = $datos['fecha_ingreso'] == '' ? 'CURRENT_TIMESTAMP' : "'".$datos['fecha_ingreso'].' 00:00:00'."'";
-	
-	$datos['nombre_sec'] = isset($datos['nombre_sec']) ? $datos['nombre_sec'] : '';
-	$datos['observaciones'] = isset($datos['observaciones']) ? $datos['observaciones'] : '';
-	$datos['amaterno'] = isset($datos['amaterno']) ? $datos['amaterno'] : '';
-	$datos['celular'] = isset($datos['celular']) ? $datos['celular'] : '';
-	$preferencia_nombre = isset($datos['preferencia_nombre']) && $datos['preferencia_nombre'] == 1 ? 1 : 0;
-	$preferencia_nombre_sec = isset($datos['preferencia_nombre_sec']) && $datos['preferencia_nombre_sec'] == 1 ? 1 : 0;	
-
-	echo $sql = "INSERT INTO miembros ( user_update, sexo, preferencia_nombre_sec, preferencia_nombre, id_puesto, nombre, nombre_sec, apaterno, amaterno, email, telefono_directo, observaciones, celular, foto, fecha_nacimiento, fecha_ingreso, active) 
-	VALUES ( '".$this->idUser."', '".$datos['sexo']."', '".$preferencia_nombre_sec."', '".$preferencia_nombre."', '0', '".$datos['nombre']."', '".$datos['nombre_sec']."', '".$datos['apaterno']."', '".$datos['amaterno']."', '".$datos['email']."', '".$datos['telefono_directo']."', '".$datos['observaciones']."', '".$datos['celular']."', 'foto', ".$fecha_nacimiento.", ".$fecha_ingreso.", '1');";
-//echo $sql;
-  DBO::select_db($this->db);
-  
-  $a = DBO::insert($sql);
-  
-  //var_dump($a);
-  
-  //Response::$data->result = DBO::getArray($sql);
-//  Response::showResult();
-	
-}
-
-public function updatePassUserPortal( $usu_id, $password ){
-
-	$sql = "UPDATE usuario SET usu_alias = '".$password."' WHERE usu_id = '".$usu_id."';";
-
-	DBO::select_db('hovahlt');
-	$a = DBO::doUpdate($sql);
-}
-
-
-public function getHorarioMiembro( $datos, $dia ){
-	$sql = "SELECT * FROM horarios h INNER JOIN descripciones d ON d.id_descripcion = h.id_descripcion WHERE h.id_miembro = '".$datos['id']."' AND h.dia = '".$dia."'";
-	DBO::select_db($this->db);
-	return DBO::getArray($sql);
-}
-*/
-
 }

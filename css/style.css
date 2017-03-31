@@ -85,3 +85,8 @@ table{
 .alinIza{
 	text-align: left;
 }
+
+table tr:hover {
+  background-color: #f00;
+  cursor: pointer;
+}
