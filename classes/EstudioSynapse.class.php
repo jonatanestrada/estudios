@@ -14,6 +14,26 @@ function __construct( $proyecto ) {
 	   $this->proyecto = $proyecto;
    }
 
+public function getFaltantesDbE_Synapse( $modalidad, $fechaTS ){
+$fechaIni = date("Y-m-d", $fechaTS);
+$fechaFin = date("Y-m-d", strtotime("$fechaIni +1 day"));
+
+	$sql = "SELECT * FROM estudios e
+LEFT JOIN monitoreo_activo.productividad_tr ptr ON ptr.id = e.accession_No
+WHERE e.modality LIKE '%".$modalidad."%' AND e.clave LIKE '%".$this->proyecto."%' AND e.study_Date_Time > '".$fechaIni."' AND e.study_Date_Time < '".$fechaFin."' AND ptr.id IS NULL
+
+UNION
+
+SELECT * FROM monitoreo_activo.productividad_tr ptr
+LEFT JOIN synapse_espejo_noc.estudios s ON s.accession_No = ptr.id
+
+WHERE ptr.modalidad LIKE '%".$modalidad."%' AND ptr.fecha_estudio > '".$fechaIni."' AND ptr.fecha_estudio < '".$fechaFin."' AND ptr.sitio LIKE '%".$this->proyecto."%' AND s.accession_No IS null";
+
+	DBO::select_db($this->db);
+	$a = DBO::getArray($sql);
+	return $a;
+}
+   
 public function getHospitales( $proyecto ){
 	$sql = "SELECT * FROM hospital.hospital WHERE clave LIKE '%".$proyecto."%' ORDER BY clave";
 

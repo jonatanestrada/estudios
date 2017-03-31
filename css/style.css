@@ -94,3 +94,8 @@ table tr:hover {
 tr:hover td {
     background-color: transparent !important; /* or #000 */
 }
+
+.linkVerDifEst{
+	color:inherit;
+	text-decoration: none;
+}

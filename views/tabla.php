@@ -66,6 +66,10 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					<td style='width: 20px;'></td>
 					<?php
 						$sumaSynapse = $sumaEspejo = 0;
+						$mas100 = 0;
+						$igual100 = 0;
+						$r50_100 = 0;
+						$r0_50 = 0;
 						foreach( $noEstudiosPorDia AS $s ){
 							$fecha = date("Ymd", strtotime($s['fecha']));
 							$synapse = $s['noEstudios'];
@@ -73,6 +77,10 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 							$espejo = $noEstudiosPorDiaEspejo[$fecha]['noEstudios'];
 							$sumaEspejo += $espejo;
 							$parity = getParity( $synapse, $espejo );
+							$mas100 	= ( $parity > 100 ) ? ( $mas100 + 1 ) : $mas100;
+							$igual100 	= ( $parity == 100 ) ? ( $igual100 + 1 ) : $igual100;
+							$r50_100 	= ( $parity > 49 && $parity < 100 ) ? ( $r50_100 + 1 ) : $r50_100;
+							$r0_50 		= ( ($parity >= 0 && $parity < 50) || $parity < 0 ) ? ( $r0_50 + 1 ) : $r0_50;
 							$classNivelAlerta = getClaseNivelAlerta( $parity );
 							echo "<td class='".$classNivelAlerta." celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>".round($parity)."%</td>";
 						}
@@ -82,7 +90,14 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 						$paritySuma = getParity( $sumaSynapse, $sumaEspejo );
 						$classNivelAlerta = getClaseNivelAlerta( $paritySuma );
 						echo '<td class="'.$classNivelAlerta.' bordes sinBordeAbajo celdasNumerosSolo1Col">'.round($paritySuma).'%</td>';
-					?>					
+					?>
+
+					<td>1</td>
+					<td class="nivelAlertaSobrepaso bordes sinBordeAbajo celdasNumerosSolo1Col">100></td>
+					<td class="nivelAlerta100 bordes sinBordeAbajo celdasNumerosSolo1Col">100=</td>
+					<td class="nivelAlertaNormal bordes sinBordeAbajo celdasNumerosSolo1Col">50-100</td>
+					<td class="nivelAlertaMuyporDebajo bordes sinBordeAbajo celdasNumerosSolo1Col">0-50</td>
+					
 				</tr>
 				
 				<tr class='viewMore'>
@@ -100,6 +115,12 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					?>
 					<td></td>
 					<td class='bordes celdasNumerosSolo1Col'><?php echo number_format($sumaNoEstudios); ?></td>
+					
+					<td>1</td>
+					<td class='bordes celdasNumerosSolo1Col'><?php echo $mas100; ?></td>
+					<td class='bordes celdasNumerosSolo1Col'><?php echo $igual100; ?></td>
+					<td class='bordes celdasNumerosSolo1Col'><?php echo $r50_100; ?></td>
+					<td class='bordes celdasNumerosSolo1Col'><?php echo $r0_50; ?></td>
 				</tr>
 				</tr>
 				
@@ -171,6 +192,7 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					foreach( $detallePorModalidad as $de ){
 						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
 						$fecha = date("Ymd", strtotime($de[$d['alias']]['fecha']));
+						$modalidad = $d['alias'];
 						$synapse = $de[$d['alias']]['noEstudios'];
 						$sumaSynapseM += $synapse;
 						$espejo = $detallePorModalidadEspejo[$fecha][$d['alias']]['noEstudios'];
@@ -178,7 +200,8 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 						$parity = getParity( $synapse, $espejo );
 						$classNivelAlerta = getClaseNivelAlerta( $parity );
 						//echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumerosAbajo">'.$noEstudios.'</td>';
-						echo '<td class="'.$firtCell.' '.$classNivelAlerta.' nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft" style="border-left: none;">'.round($parity).'%</td>';
+						$url = 'diferencias.php?m='.$modalidad.'&fecha='.strtotime($de[$d['alias']]['fecha']).'&proyecto='.$proyecto;
+						echo '<td class="'.$firtCell.' '.$classNivelAlerta.' nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft" style="border-left: none;"><a class="linkVerDifEst" href="'.$url.'" target="_blank">'.round($parity).'%</a></td>';
 						$sumaNoEstudiosModalidad += $de[$d['alias']]['noEstudios'];
 					}
 					?>
