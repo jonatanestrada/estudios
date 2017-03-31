@@ -20,7 +20,7 @@ $dias = $peridoFechas['dias'];
 $noEstudiosPorDia = $estudioSynapse->getNoEstudios2( $fechaInicioTs, $fechaFinTs );
 $detallePorModalidad = $estudioSynapse->getDetallePorModalidad( $fechaInicioTs, $fechaFinTs );
 $detallePorHospital = $estudioSynapse->getDetallePorHospital( $fechaInicioTs, $fechaFinTs );
-$hospitales = $estudioSynapse->getHospitales();
+$hospitales = $estudioSynapse->getHospitales( $proyecto );
 $modalidades = $estudioSynapse->getModalities();
 
 //Espejo

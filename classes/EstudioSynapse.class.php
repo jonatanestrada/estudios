@@ -14,8 +14,8 @@ function __construct( $proyecto ) {
 	   $this->proyecto = $proyecto;
    }
 
-public function getHospitales(){
-	$sql = "SELECT * FROM hospital.hospital ORDER BY clave";
+public function getHospitales( $proyecto ){
+	$sql = "SELECT * FROM hospital.hospital WHERE clave LIKE '%".$proyecto."%' ORDER BY clave";
 
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);

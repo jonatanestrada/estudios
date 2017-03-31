@@ -1,6 +1,7 @@
 <?php
 include_once "classes/Estudio.class.php";
 include_once "date_functions.php";
+include_once "conf.php";
 date_default_timezone_set('America/Mexico_City');
 $archivosEstudios = getFilesEstudios();
 ?>
@@ -38,7 +39,7 @@ $archivosEstudios = getFilesEstudios();
 // fichero.txt es un archivo de texto normal creado con notepad, por ejemplo.
 
 
-$connection = mysqli_connect('localhost', 'root', '', 'synapse_espejo_noc');
+$connection = mysqli_connect( HOST, DB_USER, DB_USER_PASSWORD, DATABASE);
 
 foreach ( $archivosEstudios as $file ){
 	$fp = fopen( $file, "r");
@@ -123,7 +124,7 @@ function getFieldClave( $accession_No ){
 	$patron3 = "/JALI/i";
 	$patron4 = "/TLAX/i";
 	
-	if ( preg_match($patron1, $proyecto) OR preg_match($patron2, $proyecto) OR preg_match($patron3, $proyecto) ) {
+	if ( preg_match($patron1, $proyecto) OR preg_match($patron2, $proyecto) OR preg_match($patron3, $proyecto) OR preg_match($patron4, $proyecto) ) {
 		$clave = substr( $accession_No, 0, 6);
 		return $clave;
 	}
