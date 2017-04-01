@@ -65,6 +65,7 @@ $diaSem = $diasSemana[date("N", strtotime('now -1 DAY'))];
 				Periodo: <select id='periodo' onchange="getTableParidad();">
 				  <option value="1">Mes Actual</option>
 				  <option value="2">Monthly</option>
+				  <option value="3">YTD</option>
 				
 				<input id="boton" type="button" value="Ver/Ocultar Detalles">
 			</p>

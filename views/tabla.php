@@ -439,11 +439,14 @@ function getPeridoFechas( $periodo ){
 		case 1: //Mes actual
 			return getPeridoFechasMesActual( $periodo );
 			break;
+		default:
 		case 2: //Ultimos 30 dias
 			return getPeridoFechasUltimos30( $periodo );
 			break;
-		default:
-			return getPeridoFechasUltimos30( $periodo );
+		case 3: //Ultimos 30 dias
+			return getPeridoFechasYTD( $periodo );
+			break;
+		return getPeridoFechasUltimos30( $periodo );
 	}
 }
 
@@ -453,6 +456,17 @@ function getPeridoFechasMesActual( $periodo ){
 	$d = new DateTime('first day of this month');
 	$fechaInicioTs = strtotime($d->format('Y-m-d'));
 	
+	$dias = array_reverse(getDias( $fechaInicioTs, $fechaFinTs ));
+	
+	return array( "fechaInicioTs" => $fechaInicioTs, "fechaFinTs" => $fechaFinTs, "dias" => $dias );
+}
+
+function getPeridoFechasYTD( $periodo ){ 
+	$fechaFinTs = strtotime('now');
+	$hoy = date("Y-m-d", $fechaFinTs);
+	$d = new DateTime('first day of January ' . date('Y'));
+	$fechaInicioTs = strtotime($d->format('Y-m-d'));
+
 	$dias = array_reverse(getDias( $fechaInicioTs, $fechaFinTs ));
 	
 	return array( "fechaInicioTs" => $fechaInicioTs, "fechaFinTs" => $fechaFinTs, "dias" => $dias );
