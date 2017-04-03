@@ -20,7 +20,7 @@ public function getDetallePorHospital( $fechaInicioTs, $fechaFinTs ){
 
 	$whereProyecto = ( $this->proyecto != '' ) ? " SITIO LIKE '%".$this->proyecto."%' " : '1';
 
-	$sql = "SELECT consecutivo AS fecha, SITIO, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo <= '".$fechaFin."' AND SITIO != '' GROUP BY consecutivo, SITIO ORDER BY consecutivo" ;
+	$sql = "SELECT consecutivo AS fecha, SITIO, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo < '".$fechaFin."' AND SITIO != '' GROUP BY consecutivo, SITIO ORDER BY consecutivo" ;
 
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
@@ -39,7 +39,7 @@ public function getDetallePorModalidad( $fechaInicioTs, $fechaFinTs ){
 	$fechaFin = date ( 'Ymd' , $fechaFinTs); 
 
 	$whereProyecto = ( $this->proyecto != '' ) ? " SITIO LIKE '%".$this->proyecto."%' " : '1';
-	$sql = "SELECT consecutivo AS fecha, MODALIDAD, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo <= '".$fechaFin."' GROUP BY consecutivo, MODALIDAD";
+	$sql = "SELECT consecutivo AS fecha, MODALIDAD, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo < '".$fechaFin."' GROUP BY consecutivo, MODALIDAD";
 
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
@@ -59,7 +59,7 @@ public function getNoEstudios( $fechaInicioTs, $fechaFinTs ){
 
 	$whereProyecto = ( $this->proyecto != '' ) ? " SITIO LIKE '%".$this->proyecto."%' " : '1';
 	
-	$sql = "SELECT consecutivo AS fecha, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo <= '".$fechaFin."' GROUP BY consecutivo";
+	$sql = "SELECT consecutivo AS fecha, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo < '".$fechaFin."' GROUP BY consecutivo";
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
 	

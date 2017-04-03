@@ -82,8 +82,7 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 							$r50_100 	= ( $parity > 49 && $parity < 100 ) ? ( $r50_100 + 1 ) : $r50_100;
 							$r0_50 		= ( ($parity >= 0 && $parity < 50) || $parity < 0 ) ? ( $r0_50 + 1 ) : $r0_50;
 							$classNivelAlerta = getClaseNivelAlerta( $parity );
-							$url = 'diferencias.php?t=3&m='.$modalidad.'&fecha='.strtotime($s['fecha']).'&proyecto='.$proyecto;
-							echo "<td class='".$classNivelAlerta." celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'><a class='linkVerDifEst' href='".$url."' target='_blank'>".round($parity)."%</a></td>";
+							echo "<td class='".$classNivelAlerta." celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>".round($parity)."%</td>";
 						}
 					?>
 					<td></td>
@@ -93,11 +92,11 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 						echo '<td class="'.$classNivelAlerta.' bordes sinBordeAbajo celdasNumerosSolo1Col">'.round($paritySuma).'%</td>';
 					?>
 
-					<td></td>
-					<td class="nivelAlertaSobrepaso bordes sinBordeAbajo celdasNumerosSolo1Col"  >100></td>
-					<td class="nivelAlerta100 bordes sinBordeAbajo celdasNumerosSolo1Col" >100=</td>
-					<td class="nivelAlertaNormal bordes sinBordeAbajo celdasNumerosSolo1Col" >50-100</td>
-					<td class="nivelAlertaMuyporDebajo bordes sinBordeAbajo celdasNumerosSolo1Col" >0-50</td>
+					<td style='width: 10px;'></td>
+					<td class="nivelAlertaSobrepaso bordes sinBordeAbajo celdasNumerosSolo1Col">100></td>
+					<td class="nivelAlerta100 bordes sinBordeAbajo celdasNumerosSolo1Col">100=</td>
+					<td class="nivelAlertaNormal bordes sinBordeAbajo celdasNumerosSolo1Col">50-100</td>
+					<td class="nivelAlertaMuyporDebajo bordes sinBordeAbajo celdasNumerosSolo1Col">0-50</td>
 					
 				</tr>
 				
@@ -117,11 +116,11 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					<td></td>
 					<td class='bordes celdasNumerosSolo1Col'><?php echo number_format($sumaNoEstudios); ?></td>
 					
-					<td></td>
-					<td class='bordes celdasNumerosSolo1Col' id='mas100'><?php echo $mas100; ?></td>
-					<td class='bordes celdasNumerosSolo1Col' id='igual100'><?php echo $igual100; ?></td>
-					<td class='bordes celdasNumerosSolo1Col' id='r50_100'><?php echo $r50_100; ?></td>
-					<td class='bordes celdasNumerosSolo1Col' id='r0_50'><?php echo $r0_50; ?></td>
+					<td style='width: 10px;'></td>
+					<td class='bordes celdasNumerosSolo1Col'><?php echo $mas100; ?></td>
+					<td class='bordes celdasNumerosSolo1Col'><?php echo $igual100; ?></td>
+					<td class='bordes celdasNumerosSolo1Col'><?php echo $r50_100; ?></td>
+					<td class='bordes celdasNumerosSolo1Col'><?php echo $r0_50; ?></td>
 				</tr>
 				</tr>
 				
@@ -199,13 +198,9 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 						$espejo = $detallePorModalidadEspejo[$fecha][$d['alias']]['noEstudios'];
 						$sumaEspejoM += $espejo;
 						$parity = getParity( $synapse, $espejo );
-							$mas100 	= ( $parity > 100 ) ? ( $mas100 + 1 ) : $mas100;
-							$igual100 	= ( $parity == 100 ) ? ( $igual100 + 1 ) : $igual100;
-							$r50_100 	= ( $parity > 49 && $parity < 100 ) ? ( $r50_100 + 1 ) : $r50_100;
-							$r0_50 		= ( ($parity >= 0 && $parity < 50) || $parity < 0 ) ? ( $r0_50 + 1 ) : $r0_50;
 						$classNivelAlerta = getClaseNivelAlerta( $parity );
 						//echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumerosAbajo">'.$noEstudios.'</td>';
-						$url = 'diferencias.php?t=1&m='.$modalidad.'&fecha='.strtotime($de[$d['alias']]['fecha']).'&proyecto='.$proyecto;
+						$url = 'diferencias.php?m='.$modalidad.'&fecha='.strtotime($de[$d['alias']]['fecha']).'&proyecto='.$proyecto;
 						echo '<td class="'.$firtCell.' '.$classNivelAlerta.' nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft" style="border-left: none;"><a class="linkVerDifEst" href="'.$url.'" target="_blank">'.round($parity).'%</a></td>';
 						$sumaNoEstudiosModalidad += $de[$d['alias']]['noEstudios'];
 					}
@@ -317,13 +312,8 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 						$espejo = $detallePorHospitalEspejo[$fecha][$h['clave']]['noEstudios'];
 						$sumaEspejo += $espejo;
 						$parity = getParity( $synapse, $espejo );
-							$mas100 	= ( $parity > 100 ) ? ( $mas100 + 1 ) : $mas100;
-							$igual100 	= ( $parity == 100 ) ? ( $igual100 + 1 ) : $igual100;
-							$r50_100 	= ( $parity > 49 && $parity < 100 ) ? ( $r50_100 + 1 ) : $r50_100;
-							$r0_50 		= ( ($parity >= 0 && $parity < 50) || $parity < 0 ) ? ( $r0_50 + 1 ) : $r0_50;
 						$classNivelAlerta = getClaseNivelAlerta( $parity );
-						$url = 'diferencias.php?t=2&m='.$modalidad.'&fecha='.strtotime($deH[$h['clave']]['fecha']).'&proyecto='.$h['clave'];
-						echo '<td class="'.$firtCell.' '.$classNivelAlerta.' nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft" style="border-left: none;"><a class="linkVerDifEst" href="'.$url.'" target="_blank">'.round($parity).'%</a></td>';
+						echo '<td class="'.$firtCell.' '.$classNivelAlerta.' nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft" style="border-left: none;">'.round($parity).'%</td>';
 						$sumaNoEstudiosHospital += $deH[$h['clave']]['noEstudios'];
 					}
 					?>
@@ -378,16 +368,6 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 				<?php endforeach; ?>
 				
 			</table>
-
-		<script>
-			$(document).ready(function(){
-				$('#mas100').html('<?php echo $mas100; ?>');
-				$('#igual100').html('<?php echo $igual100; ?>');
-				$('#r50_100').html('<?php echo $r50_100; ?>');
-				$('#r0_50').html('<?php echo $r0_50; ?>');
-			});
-
-		</script>
 
 <?php
 
@@ -459,14 +439,11 @@ function getPeridoFechas( $periodo ){
 		case 1: //Mes actual
 			return getPeridoFechasMesActual( $periodo );
 			break;
-		default:
 		case 2: //Ultimos 30 dias
 			return getPeridoFechasUltimos30( $periodo );
 			break;
-		case 3: //Ultimos 30 dias
-			return getPeridoFechasYTD( $periodo );
-			break;
-		return getPeridoFechasUltimos30( $periodo );
+		default:
+			return getPeridoFechasUltimos30( $periodo );
 	}
 }
 
@@ -476,17 +453,6 @@ function getPeridoFechasMesActual( $periodo ){
 	$d = new DateTime('first day of this month');
 	$fechaInicioTs = strtotime($d->format('Y-m-d'));
 	
-	$dias = array_reverse(getDias( $fechaInicioTs, $fechaFinTs ));
-	
-	return array( "fechaInicioTs" => $fechaInicioTs, "fechaFinTs" => $fechaFinTs, "dias" => $dias );
-}
-
-function getPeridoFechasYTD( $periodo ){ 
-	$fechaFinTs = strtotime('now');
-	$hoy = date("Y-m-d", $fechaFinTs);
-	$d = new DateTime('first day of January ' . date('Y'));
-	$fechaInicioTs = strtotime($d->format('Y-m-d'));
-
 	$dias = array_reverse(getDias( $fechaInicioTs, $fechaFinTs ));
 	
 	return array( "fechaInicioTs" => $fechaInicioTs, "fechaFinTs" => $fechaFinTs, "dias" => $dias );
