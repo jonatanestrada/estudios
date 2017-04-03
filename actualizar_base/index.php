@@ -7,7 +7,8 @@ $archivosEstudios = getFilesEstudios();
 ?>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <table border=1>
-<?php /*	<tr>
+<!-- 
+	<tr>
 		<td>Base</td>
 		<td>Patient ID</td>
 		<td>Accession No</td>
@@ -24,9 +25,10 @@ $archivosEstudios = getFilesEstudios();
 		<td>Clave</td>
 		<td>Clave-Mod</td>
 		<td>SD</td>
-	</tr>*/
-	
-?>
+	</tr>
+-->
+		
+
 
 	<tr>
 		<td>Archivo</td>
@@ -80,8 +82,8 @@ function writeRowHTML( $fields ){
 	$html .= '<td>'.$fields['procedure_Code'].'</td>';
 	$html .= '<td>'.$fields['image_Count'].'</td>';
 	$html .= '<td>'.$fields['patient_Name'].'</td>';
-	$html .= '<td>'.$fields['study_Date_Time_Last'].'</td>';
-	$html .= '<td>'.$fields['last_Modified'].'</td>';
+	$html .= '<td>'.date('d-m-Y', $fields['study_Date_Time_Last']).'</td>';
+	$html .= '<td>'.date('d-m-Y', $fields['last_Modified']).'</td>';
 	$html .= '<td>'.$fields['fecha_nacimiento'].'</td>';
 	$html .= '<td>'.$fields['gender'].'</td>';
 	$html .= '<td>'.$fields['imageSender'].'</td>';
@@ -162,7 +164,6 @@ function FormatMysql( $date ){
 function getFields( $line ){
 	$l = explode("\t", $line );
 
-	
 	$fields['patient_ID']			= $l[0];
 	$fields['accession_No']			= $l[1];
 	$fields['modality']				= $l[2];

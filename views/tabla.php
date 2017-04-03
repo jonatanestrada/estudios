@@ -312,6 +312,14 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 						//$noEstudios = ( isset( $deH[$h['clave']]['noEstudios'] ) ) ? number_format($deH[$h['clave']]['noEstudios']): '-';
 						$fecha = date("Ymd", strtotime($deH[$h['clave']]['fecha']));
 						
+						if( !$deH[$h['clave']]['fecha'] ){							
+							$fecha = date("Ymd", strtotime($fechaAnterior.' +1 day'));
+							$fechaAnterior = date("Y-m-d", strtotime($fechaAnterior.' +1 day'));
+						}
+						else{
+							$fechaAnterior = $deH[$h['clave']]['fecha'];
+						}
+						
 						$synapse = $deH[$h['clave']]['noEstudios'];
 						$sumaSynapse += $synapse;
 						$espejo = $detallePorHospitalEspejo[$fecha][$h['clave']]['noEstudios'];
@@ -397,7 +405,7 @@ function getParity( $synapse, $DBE ){
 	if( $synapse > 0 && $DBE == 0 )
 		return 0;
 	if( $synapse == 0 && $DBE > 0 )
-		return 100;
+		return 0;
 	if( $synapse > 0 && $DBE > 0 )
 		return ($synapse / $DBE)*100;
 }
