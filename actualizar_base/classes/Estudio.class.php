@@ -1,5 +1,5 @@
 <?php
-include_once "conexion.php";
+//include_once "conexion.php";
 include_once "date_functions.php";
 
 class Estudio{
@@ -41,7 +41,52 @@ public function add( $datos ){
 //var_dump($datos);
 
 	//$datos['observaciones'] = isset($datos['observaciones']) ? $datos['observaciones'] : 'NULL';
-	$sql = "INSERT INTO estudios ( is_valid, patient_ID, accession_No, modality, status, procedure_Code, image_Count, patient_Name, study_Date_Time, last_Modified_Timestamp, birth_Date, 
+
+	//$this->insert( $datos );
+	
+	
+	if( $row = $this->existAccessionNo( $datos['accession_No'] ) ){
+		//echo "id_estudio: ".$row->id_estudio;
+		$this->update( $row->id_estudio, $datos );
+	}
+	else
+		$this->insert( $datos );
+}
+
+public function update( $id_estudio, $datos ){
+	$sql = "UPDATE estudios SET 
+	is_valid = '".$datos['isValid']."',
+	modality = '".$datos['modality']."', 
+	status = '".$datos['status']."', 
+	procedure_Code = '".$datos['procedure_Code']."', 
+	image_Count = '".$datos['image_Count']."', 
+	patient_Name = '".$datos['patient_Name']."', 
+	study_Date_Time = '".getFormatInsertMysqlDate($datos['study_Date_Time_Last'])."', 
+	last_Modified_Timestamp = '".getFormatInsertMysqlDate($datos['last_Modified'])."', 
+	birth_Date = ".$datos['fecha_nacimiento'].", 
+	gender = '".$datos['gender']."', 
+	clave = '".$datos['clave']."', 
+	imageSender = '".$datos['imageSender']."' 
+	WHERE id_estudio = '$id_estudio';";
+	
+	echo $sql.'<br>';
+	
+	$this->connection->query($sql);
+}
+
+public function existAccessionNo( $accessionNo ){
+	$sql = "SELECT * FROM estudios WHERE accession_No = '".trim($accessionNo)."'";
+	//$this->connection->query($sql);
+	 $result = $this->connection->query($sql);
+    if($result)
+      return $result->fetch_object();
+    else
+      return false;
+}
+
+public function insert( $datos ){
+	
+		$sql = "INSERT INTO estudios ( is_valid, patient_ID, accession_No, modality, status, procedure_Code, image_Count, patient_Name, study_Date_Time, last_Modified_Timestamp, birth_Date, 
 	gender, clave, imageSender ) 
 	VALUES 
 	( 	'".$datos['isValid']."', 
@@ -59,26 +104,12 @@ public function add( $datos ){
 		'".$datos['clave']."',
 		'".$datos['imageSender']."'
 		);";
-//echo $sql.'<br>';
-	/*DBO::select_db($this->db);  
-	$a = DBO::insert($sql);  	
-	if(!$a)
-		echo $sql.'<br>';*/
-		
-		
+	echo $sql.'<br>';
 
-
-
-if (!mysqli_query($this->connection, $sql))
-  {
-  echo("SQL: ".$sql."<br>Error description: " . mysqli_error($this->connection)).'<br><br>';
-  }
-
-
-
-		
-		
-	
+	if (!mysqli_query($this->connection, $sql))
+	  {
+		echo("SQL: ".$sql."<br>Error description: " . mysqli_error($this->connection)).'<br><br>';
+	  }
 }
 
 

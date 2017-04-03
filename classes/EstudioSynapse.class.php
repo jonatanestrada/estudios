@@ -14,9 +14,66 @@ function __construct( $proyecto ) {
 	   $this->proyecto = $proyecto;
    }
 
-public function getFaltantesDbE_Synapse( $modalidad, $fechaTS ){
-$fechaIni = date("Y-m-d", $fechaTS);
-$fechaFin = date("Y-m-d", strtotime("$fechaIni +1 day"));
+public function getFaltantesDbE_Synapse( $modalidad, $fechaTS, $type ){
+	switch ($type) {
+    case 1:
+			return $this->getDifModa( $modalidad, $fechaTS );
+        break;
+    case 2:
+		return $this->getDifHospi( $modalidad, $fechaTS );
+        break;
+    case 3:
+		return $this->getDifAll( $modalidad, $fechaTS );
+        break;
+    default:
+       echo "Error";
+	   exit;
+	}
+}
+
+public function getDifAll( $modalidad, $fechaTS ){
+	$fechaIni = date("Y-m-d", $fechaTS);
+	$fechaFin = date("Y-m-d", strtotime("$fechaIni +1 day"));
+
+	$sql = "SELECT * FROM estudios e
+LEFT JOIN monitoreo_activo.productividad_tr ptr ON ptr.id = e.accession_No
+WHERE e.study_Date_Time > '".$fechaIni."' AND e.study_Date_Time < '".$fechaFin."' AND ptr.id IS NULL
+
+UNION
+
+SELECT * FROM monitoreo_activo.productividad_tr ptr
+LEFT JOIN synapse_espejo_noc.estudios s ON s.accession_No = ptr.id
+
+WHERE ptr.fecha_estudio > '".$fechaIni."' AND ptr.fecha_estudio < '".$fechaFin."' AND s.accession_No IS null";
+
+	DBO::select_db($this->db);
+	$a = DBO::getArray($sql);
+	return $a;	
+}
+
+public function getDifHospi( $modalidad, $fechaTS ){
+	$fechaIni = date("Y-m-d", $fechaTS);
+	$fechaFin = date("Y-m-d", strtotime("$fechaIni +1 day"));
+
+	$sql = "SELECT * FROM estudios e
+LEFT JOIN monitoreo_activo.productividad_tr ptr ON ptr.id = e.accession_No
+WHERE e.clave LIKE '%".$this->proyecto."%' AND e.study_Date_Time > '".$fechaIni."' AND e.study_Date_Time < '".$fechaFin."' AND ptr.id IS NULL
+
+UNION
+
+SELECT * FROM monitoreo_activo.productividad_tr ptr
+LEFT JOIN synapse_espejo_noc.estudios s ON s.accession_No = ptr.id
+
+WHERE ptr.fecha_estudio > '".$fechaIni."' AND ptr.fecha_estudio < '".$fechaFin."' AND ptr.sitio LIKE '%".$this->proyecto."%' AND s.accession_No IS null";
+
+	DBO::select_db($this->db);
+	$a = DBO::getArray($sql);
+	return $a;	
+}
+
+public function getDifModa( $modalidad, $fechaTS ){
+	$fechaIni = date("Y-m-d", $fechaTS);
+	$fechaFin = date("Y-m-d", strtotime("$fechaIni +1 day"));
 
 	$sql = "SELECT * FROM estudios e
 LEFT JOIN monitoreo_activo.productividad_tr ptr ON ptr.id = e.accession_No
@@ -31,7 +88,7 @@ WHERE ptr.modalidad LIKE '%".$modalidad."%' AND ptr.fecha_estudio > '".$fechaIni
 
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
-	return $a;
+	return $a;	
 }
    
 public function getHospitales( $proyecto ){
