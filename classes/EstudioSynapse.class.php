@@ -14,66 +14,9 @@ function __construct( $proyecto ) {
 	   $this->proyecto = $proyecto;
    }
 
-public function getFaltantesDbE_Synapse( $modalidad, $fechaTS, $type ){
-	switch ($type) {
-    case 1:
-			return $this->getDifModa( $modalidad, $fechaTS );
-        break;
-    case 2:
-		return $this->getDifHospi( $modalidad, $fechaTS );
-        break;
-    case 3:
-		return $this->getDifAll( $modalidad, $fechaTS );
-        break;
-    default:
-       echo "Error";
-	   exit;
-	}
-}
-
-public function getDifAll( $modalidad, $fechaTS ){
-	$fechaIni = date("Y-m-d", $fechaTS);
-	$fechaFin = date("Y-m-d", strtotime("$fechaIni +1 day"));
-
-	$sql = "SELECT * FROM estudios e
-LEFT JOIN monitoreo_activo.productividad_tr ptr ON ptr.id = e.accession_No
-WHERE e.study_Date_Time > '".$fechaIni."' AND e.study_Date_Time < '".$fechaFin."' AND ptr.id IS NULL
-
-UNION
-
-SELECT * FROM monitoreo_activo.productividad_tr ptr
-LEFT JOIN synapse_espejo_noc.estudios s ON s.accession_No = ptr.id
-
-WHERE ptr.fecha_estudio > '".$fechaIni."' AND ptr.fecha_estudio < '".$fechaFin."' AND s.accession_No IS null";
-
-	DBO::select_db($this->db);
-	$a = DBO::getArray($sql);
-	return $a;	
-}
-
-public function getDifHospi( $modalidad, $fechaTS ){
-	$fechaIni = date("Y-m-d", $fechaTS);
-	$fechaFin = date("Y-m-d", strtotime("$fechaIni +1 day"));
-
-	$sql = "SELECT * FROM estudios e
-LEFT JOIN monitoreo_activo.productividad_tr ptr ON ptr.id = e.accession_No
-WHERE e.clave LIKE '%".$this->proyecto."%' AND e.study_Date_Time > '".$fechaIni."' AND e.study_Date_Time < '".$fechaFin."' AND ptr.id IS NULL
-
-UNION
-
-SELECT * FROM monitoreo_activo.productividad_tr ptr
-LEFT JOIN synapse_espejo_noc.estudios s ON s.accession_No = ptr.id
-
-WHERE ptr.fecha_estudio > '".$fechaIni."' AND ptr.fecha_estudio < '".$fechaFin."' AND ptr.sitio LIKE '%".$this->proyecto."%' AND s.accession_No IS null";
-
-	DBO::select_db($this->db);
-	$a = DBO::getArray($sql);
-	return $a;	
-}
-
-public function getDifModa( $modalidad, $fechaTS ){
-	$fechaIni = date("Y-m-d", $fechaTS);
-	$fechaFin = date("Y-m-d", strtotime("$fechaIni +1 day"));
+public function getFaltantesDbE_Synapse( $modalidad, $fechaTS ){
+$fechaIni = date("Y-m-d", $fechaTS);
+$fechaFin = date("Y-m-d", strtotime("$fechaIni +1 day"));
 
 	$sql = "SELECT * FROM estudios e
 LEFT JOIN monitoreo_activo.productividad_tr ptr ON ptr.id = e.accession_No
@@ -88,7 +31,7 @@ WHERE ptr.modalidad LIKE '%".$modalidad."%' AND ptr.fecha_estudio > '".$fechaIni
 
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
-	return $a;	
+	return $a;
 }
    
 public function getHospitales( $proyecto ){
@@ -99,38 +42,59 @@ public function getHospitales( $proyecto ){
 	return $a;
 }   
    
-public function getDetallePorHospital( $fechaInicioTs, $fechaFinTs ){
-	$noEstudiosPorHospital = $this->getNoEstudiosPorHospital( $fechaInicioTs, $fechaFinTs );
+public function getDetallePorHospital( $fechaInicioTs, $fechaFinTs, $periodo ){
+	$noEstudiosPorHospital = $this->getNoEstudiosPorHospital( $fechaInicioTs, $fechaFinTs, $periodo );
 	$m = array();
 
-	foreach( $noEstudiosPorHospital AS $e ){
-		$m[$e['fecha']][$e['clave']] = $e;
-		//echo $e['fecha'].'<br>';
+	if( $periodo == 3 ){
+		foreach( $noEstudiosPorHospital AS $e ){
+			$m[$e['mes']][$e['clave']] = $e;
+			//echo $e['fecha'].'<br>';
+		}
+	}
+	else{
+		foreach( $noEstudiosPorHospital AS $e ){
+			$m[$e['fecha']][$e['clave']] = $e;
+			//echo $e['fecha'].'<br>';
+		}
 	}
 	
 	return $m;
 }
 
-public function getNoEstudiosPorHospital( $fechaInicioTs, $fechaFinTs ){
+public function getNoEstudiosPorHospital( $fechaInicioTs, $fechaFinTs, $periodo ){
 	$fechaInicio = date ( 'Y-m-d' , $fechaInicioTs); 
 	$fechaFin = date ( 'Y-m-d' , $fechaFinTs); 
 	
 	$whereProyecto = ( $this->proyecto != '' ) ? " clave LIKE '%".$this->proyecto."%' " : '1';
 	
-	$sql = "SELECT DATE(study_Date_Time) AS fecha, clave, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY DATE(study_Date_Time), clave ORDER BY fecha";
+	if( $periodo == 3 )
+		$sql = "SELECT Year(study_Date_Time) AS year, Month(study_Date_Time) AS mes, clave, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY Year(study_Date_Time), Month(study_Date_Time), clave ORDER BY year, mes";
+	else
+		$sql = "SELECT DATE(study_Date_Time) AS fecha, clave, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY DATE(study_Date_Time), clave ORDER BY fecha";
+	
 
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
 	return $a;
 }
    
-public function getDetallePorModalidad( $fechaInicioTs, $fechaFinTs ){
-	$noEstudiosPorModalidad = $this->getNoEstudiosPorModalidad( $fechaInicioTs, $fechaFinTs );
+public function getDetallePorModalidad( $fechaInicioTs, $fechaFinTs, $periodo ){
+	$noEstudiosPorModalidad = $this->getNoEstudiosPorModalidad( $fechaInicioTs, $fechaFinTs, $periodo );
+	
 	$m = array();
 
-	foreach( $noEstudiosPorModalidad AS $e ){
-		$m[$e['fecha']][$e['modality']] = $e;
-		//echo $e['fecha'].'<br>';
+	if( $periodo == 3 ){
+		foreach( $noEstudiosPorModalidad AS $e ){
+			$m[$e['mes']][$e['modality']] = $e;
+			//echo $e['mes'].'<br>';
+		}
+	}
+	else{
+		foreach( $noEstudiosPorModalidad AS $e ){
+			$m[$e['fecha']][$e['modality']] = $e;
+			//echo $e['fecha'].'<br>';
+		}
 	}
 	
 	return $m;
@@ -144,13 +108,16 @@ public function getModalities(){
 	return $a;
 }
 
-public function getNoEstudiosPorModalidad( $fechaInicioTs, $fechaFinTs ){
+public function getNoEstudiosPorModalidad( $fechaInicioTs, $fechaFinTs, $periodo ){
 	$fechaInicio = date ( 'Y-m-d' , $fechaInicioTs); 
 	$fechaFin = date ( 'Y-m-d' , $fechaFinTs); 
 
 	$whereProyecto = ( $this->proyecto != '' ) ? " clave LIKE '%".$this->proyecto."%' " : '1';
 	
-	$sql = "SELECT DATE(study_Date_Time) AS fecha, modality, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY DATE(study_Date_Time), modality ORDER BY fecha";
+	if( $periodo == 3 )
+		$sql = "SELECT Year(study_Date_Time) AS year, Month(study_Date_Time) AS mes, modality, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY Year(study_Date_Time), Month(study_Date_Time), modality ORDER BY year, mes";
+	else
+		$sql = "SELECT DATE(study_Date_Time) AS fecha, modality, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY DATE(study_Date_Time), modality ORDER BY fecha";
 
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
@@ -167,7 +134,7 @@ public function getNoEstudios( $noDias ){
 	return $noEstdudiosPorDia;
 }
 
-public function getNoEstudios2( $fechaInicioTs, $fechaFinTs ){
+public function getNoEstudios2( $fechaInicioTs, $fechaFinTs, $periodo ){
 	$fechaInicio = date ( 'Y-m-d' , $fechaInicioTs); 
 	$fechaFin = date("Y-m-d", $fechaFinTs); 
 	
@@ -175,8 +142,10 @@ public function getNoEstudios2( $fechaInicioTs, $fechaFinTs ){
 	//echo "$fechaFin, $fechaInicio";
 
 	$whereProyecto = ( $this->proyecto != '' ) ? " clave LIKE '%".$this->proyecto."%' " : '1';
-	
-	$sql = "SELECT DATE(study_Date_Time) AS fecha, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY DATE(study_Date_Time) ORDER BY fecha";
+	if( $periodo == 3 )
+		$sql = "SELECT Year(study_Date_Time) AS year, Month(study_Date_Time) AS mes, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY Year(study_Date_Time), Month(study_Date_Time) ORDER BY year, mes";
+	else
+		$sql = "SELECT DATE(study_Date_Time) AS fecha, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY DATE(study_Date_Time) ORDER BY fecha";
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
 	return $a;
@@ -190,7 +159,7 @@ private function getDiasEstudios( $noDias ){
 	
 	for( $i = 0; $i <= $noDias; $i++ ){
 		$nuevafecha = strtotime ( '-'.$i.' day' , strtotime ( $hoy ) ) ;
-		echo '<br>'.$diasEstudios[] = date ( 'Y-m-j' , $nuevafecha );
+		$diasEstudios[] = date ( 'Y-m-j' , $nuevafecha );
 	}
 
 	return $diasEstudios;

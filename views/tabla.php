@@ -17,17 +17,17 @@ $fechaFinTs = $peridoFechas['fechaFinTs'];
 $fechaInicioTs = $peridoFechas['fechaInicioTs'];
 $dias = $peridoFechas['dias'];
 
-$noEstudiosPorDia = $estudioSynapse->getNoEstudios2( $fechaInicioTs, $fechaFinTs );
-$detallePorModalidad = $estudioSynapse->getDetallePorModalidad( $fechaInicioTs, $fechaFinTs );
-$detallePorHospital = $estudioSynapse->getDetallePorHospital( $fechaInicioTs, $fechaFinTs );
+$noEstudiosPorDia = $estudioSynapse->getNoEstudios2( $fechaInicioTs, $fechaFinTs, $periodo );
+$detallePorModalidad = $estudioSynapse->getDetallePorModalidad( $fechaInicioTs, $fechaFinTs, $periodo );
+$detallePorHospital = $estudioSynapse->getDetallePorHospital( $fechaInicioTs, $fechaFinTs, $periodo );
 $hospitales = $estudioSynapse->getHospitales( $proyecto );
 $modalidades = $estudioSynapse->getModalities();
 
 //Espejo
 $estudioEspejo = new EstudioEspejo( $proyecto );
-$noEstudiosPorDiaEspejo = $estudioEspejo->getNoEstudios( $fechaInicioTs, $fechaFinTs );
-$detallePorModalidadEspejo = $estudioEspejo->getDetallePorModalidad( $fechaInicioTs, $fechaFinTs );
-$detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioTs, $fechaFinTs );
+$noEstudiosPorDiaEspejo = $estudioEspejo->getNoEstudios( $fechaInicioTs, $fechaFinTs, $periodo );
+$detallePorModalidadEspejo = $estudioEspejo->getDetallePorModalidad( $fechaInicioTs, $fechaFinTs, $periodo );
+$detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioTs, $fechaFinTs, $periodo );
 
 ?>
 			<table cellpadding="0" cellspacing="0" style='margin: auto;'>
@@ -71,7 +71,11 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 						$r50_100 = 0;
 						$r0_50 = 0;
 						foreach( $noEstudiosPorDia AS $s ){
-							$fecha = date("Ymd", strtotime($s['fecha']));
+							if( $periodo == 3 ){
+								$fecha = "0".$s['mes'];
+							}
+							else
+								$fecha = date("Ymd", strtotime($s['fecha']));
 							$synapse = $s['noEstudios'];
 							$sumaSynapse += $synapse;
 							$espejo = $noEstudiosPorDiaEspejo[$fecha]['noEstudios'];
@@ -192,7 +196,12 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					$sumaNoEstudiosModalidad = 0;
 					foreach( $detallePorModalidad as $de ){
 						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
-						$fecha = date("Ymd", strtotime($de[$d['alias']]['fecha']));
+						if( $periodo == 3 ){
+							$fecha = "0".$de[$d['alias']]['mes'];
+							//var_dump($de[$d['alias']]['mes']);
+						}
+						else
+							$fecha = date("Ymd", strtotime($de[$d['alias']]['fecha']));
 						$modalidad = $d['alias'];
 						$synapse = $de[$d['alias']]['noEstudios'];
 						$sumaSynapseM += $synapse;
@@ -310,7 +319,7 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					foreach( $detallePorHospital as $deH ){
 						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : ''; //$detallePorHospital['2017-02-27']['ISEM01']['noEstudios']
 						//$noEstudios = ( isset( $deH[$h['clave']]['noEstudios'] ) ) ? number_format($deH[$h['clave']]['noEstudios']): '-';
-						$fecha = date("Ymd", strtotime($deH[$h['clave']]['fecha']));
+
 						
 						if( !$deH[$h['clave']]['fecha'] ){							
 							$fecha = date("Ymd", strtotime($fechaAnterior.' +1 day'));
@@ -319,6 +328,12 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 						else{
 							$fechaAnterior = $deH[$h['clave']]['fecha'];
 						}
+						
+						if( $periodo == 3 ){
+							$fecha = "0".$deH[$h['clave']]['mes'];
+						}
+						else
+							$fecha = date("Ymd", strtotime($deH[$h['clave']]['fecha']));
 						
 						$synapse = $deH[$h['clave']]['noEstudios'];
 						$sumaSynapse += $synapse;
@@ -461,6 +476,28 @@ function getDias( $fechaInicioTs, $fechaFinTs ){
 	
 }
 
+function getMeses( $fechaInicioTs, $fechaFinTs ){
+	$fechaInicio = date("Y-m-d", $fechaInicioTs);
+	$fechaFin = date("Y-m-d", $fechaFinTs);
+
+	$datetime1 = new DateTime($fechaInicio);
+	$datetime2 = new DateTime($fechaFin);
+	$interval = $datetime1->diff($datetime2);
+	$noDias = $interval->format('%m');
+	
+	$dias = array();
+	
+	for( $i = 0; $i <= $noDias; $i++ ){
+		$fechaI = strtotime ( '-'.$i.' month' , strtotime ( $fechaFin ) ) ;
+		//echo '<br>'.$fechaInicio = date ( 'Y-m-d' , $fechaInicio); 
+		$dia = date ( 'Y' , $fechaI);
+		$mes = date ( 'M' , $fechaI);
+		$dias[] = array( 'mes' => $mes, 'dia' => $dia );
+	}
+	return $dias;
+	
+}
+
 function getPeridoFechas( $periodo ){
 
 	switch ( $periodo ) {
@@ -495,7 +532,7 @@ function getPeridoFechasYTD( $periodo ){
 	$d = new DateTime('first day of January ' . date('Y'));
 	$fechaInicioTs = strtotime($d->format('Y-m-d'));
 
-	$dias = array_reverse(getDias( $fechaInicioTs, $fechaFinTs ));
+	$dias = array_reverse(getMeses( $fechaInicioTs, $fechaFinTs ));
 	
 	return array( "fechaInicioTs" => $fechaInicioTs, "fechaFinTs" => $fechaFinTs, "dias" => $dias );
 }

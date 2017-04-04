@@ -14,60 +14,90 @@ function __construct( $proyecto ) {
 	   $this->proyecto = $proyecto;
    }
 
-public function getDetallePorHospital( $fechaInicioTs, $fechaFinTs ){
+public function getDetallePorHospital( $fechaInicioTs, $fechaFinTs, $periodo ){
 	$fechaInicio = date ( 'Ymd' , $fechaInicioTs); 
 	$fechaFin = date ( 'Ymd' , $fechaFinTs); 
 
 	$whereProyecto = ( $this->proyecto != '' ) ? " SITIO LIKE '%".$this->proyecto."%' " : '1';
 
-	$sql = "SELECT consecutivo AS fecha, SITIO, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo < '".$fechaFin."' AND SITIO != '' GROUP BY consecutivo, SITIO ORDER BY consecutivo" ;
+	if( $periodo == 3 )
+		$sql = "SELECT SUBSTRING(consecutivo, 1, 4) as year, SUBSTRING(consecutivo, 5, 2) AS mes, SITIO, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo < '".$fechaFin."' AND SITIO != '' GROUP BY SUBSTRING(consecutivo, 1, 4), SUBSTRING(consecutivo, 5, 2), SITIO ORDER BY year, mes";
+	else
+		$sql = "SELECT consecutivo AS fecha, SITIO, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo < '".$fechaFin."' AND SITIO != '' GROUP BY consecutivo, SITIO ORDER BY consecutivo" ;
 
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
 	
 	$estudios = array();
 	
-	foreach( $a as $e ){
-		$estudios[$e['fecha']][$e['SITIO']]  = $e;
+	if( $periodo == 3 ){
+		foreach( $a as $e ){
+			$estudios[$e['mes']][$e['SITIO']]  = $e;
+		}
+	}
+	else{
+		foreach( $a as $e ){
+			$estudios[$e['fecha']][$e['SITIO']]  = $e;
+		}
 	}
 	
 	return $estudios;
 }
    
-public function getDetallePorModalidad( $fechaInicioTs, $fechaFinTs ){
+public function getDetallePorModalidad( $fechaInicioTs, $fechaFinTs, $periodo ){
 	$fechaInicio = date ( 'Ymd' , $fechaInicioTs); 
 	$fechaFin = date ( 'Ymd' , $fechaFinTs); 
 
 	$whereProyecto = ( $this->proyecto != '' ) ? " SITIO LIKE '%".$this->proyecto."%' " : '1';
-	$sql = "SELECT consecutivo AS fecha, MODALIDAD, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo < '".$fechaFin."' GROUP BY consecutivo, MODALIDAD";
+	if( $periodo == 3 )
+		$sql = "SELECT SUBSTRING(consecutivo, 1, 4) as year, SUBSTRING(consecutivo, 5, 2) mes, MODALIDAD, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo < '".$fechaFin."' GROUP BY SUBSTRING(consecutivo, 1, 4), SUBSTRING(consecutivo, 5, 2), MODALIDAD";
+	else
+		$sql = "SELECT consecutivo AS fecha, MODALIDAD, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo < '".$fechaFin."' GROUP BY consecutivo, MODALIDAD";
 
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
 	
 	$estudios = array();
 	
-	foreach( $a as $e ){
-		$estudios[$e['fecha']][$e['MODALIDAD']]  = $e;
+	if( $periodo == 3 ){
+		foreach( $a as $e ){
+			$estudios[$e['mes']][$e['MODALIDAD']]  = $e;
+		}
+	}
+	else{
+		foreach( $a as $e ){
+			$estudios[$e['fecha']][$e['MODALIDAD']]  = $e;
+		}
 	}
 	
 	return $estudios;
 }
    
-public function getNoEstudios( $fechaInicioTs, $fechaFinTs ){
+public function getNoEstudios( $fechaInicioTs, $fechaFinTs, $periodo ){
 	$fechaInicio = date ( 'Ymd' , $fechaInicioTs); 
 	$fechaFin = date ( 'Ymd' , $fechaFinTs); 
 
 	$whereProyecto = ( $this->proyecto != '' ) ? " SITIO LIKE '%".$this->proyecto."%' " : '1';
 	
-	$sql = "SELECT consecutivo AS fecha, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo < '".$fechaFin."' GROUP BY consecutivo";
+	if( $periodo == 3 )
+		$sql = "SELECT SUBSTRING(consecutivo, 1, 4) as year, SUBSTRING(consecutivo, 5, 2) mes, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE SITIO LIKE '%ISEM%' AND consecutivo >= '20170101' AND consecutivo < '20170403' GROUP BY SUBSTRING(consecutivo, 1, 4), SUBSTRING(consecutivo, 5, 2)";
+	else
+		$sql = "SELECT consecutivo AS fecha, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo < '".$fechaFin."' GROUP BY consecutivo";
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
 	
 	$estudios = array();
 	
-	foreach( $a as $e ){
-		$estudios[$e['fecha']] = $e;
-	}	
+	if( $periodo == 3 ){
+		foreach( $a as $e ){
+			$estudios[$e['mes']] = $e;
+		}
+	}
+	else{
+			foreach( $a as $e ){
+			$estudios[$e['fecha']] = $e;
+		}
+	}
 	
 	return $estudios;
 }
