@@ -23,7 +23,7 @@ public function getFaltantesDbE_Synapse( $modalidad, $fechaTS, $type, $periodo )
 
 	$m = ( $type == 1 ) ? " modality LIKE '%".$modalidad."%' AND " : '';
 
-	echo $sql = "SELECT * FROM estudios WHERE ".$m." clave LIKE '%".$this->proyecto."%' AND study_Date_Time > '".$fechaIni."' AND study_Date_Time < '".$fechaFin."' AND enEspejo = 0 LIMIT 5000;";
+	$sql = "SELECT * FROM estudios WHERE ".$m." clave LIKE '%".$this->proyecto."%' AND study_Date_Time > '".$fechaIni."' AND study_Date_Time < '".$fechaFin."' AND enEspejo = 0 LIMIT 5000;";
 
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
