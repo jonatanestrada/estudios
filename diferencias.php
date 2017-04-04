@@ -10,6 +10,7 @@ $proyecto = ( isset($_REQUEST['proyecto']) ? $_REQUEST['proyecto']: 'ISEM' );
 $fechaTS = ( isset($_REQUEST['fecha']) ? $_REQUEST['fecha']: '' );
 $modalidad = ( isset($_REQUEST['m']) ? $_REQUEST['m']: '' );
 $type = ( isset($_REQUEST['t']) ? $_REQUEST['t']: '' );
+$periodo = ( isset($_REQUEST['p']) ? $_REQUEST['p']: '' );
 
 
 //#f3f3f4
@@ -18,7 +19,7 @@ $type = ( isset($_REQUEST['t']) ? $_REQUEST['t']: '' );
 $estudioSynapse = new EstudioSynapse( $proyecto );
 //$noEstudiosPorDia = $estudioSynapse->getNoEstudios( 30 );
 
-$a = $estudioSynapse->getFaltantesDbE_Synapse( $modalidad, $fechaTS, $type );
+$a = $estudioSynapse->getFaltantesDbE_Synapse( $modalidad, $fechaTS, $type, $periodo );
 
 
 ?>
@@ -50,7 +51,7 @@ $a = $estudioSynapse->getFaltantesDbE_Synapse( $modalidad, $fechaTS, $type );
 		</h1>
 		<hr>
 		<h2>
-			Modalidad: <?php echo $modalidad; ?>
+			Modalidad: <?php echo ($type==1)?  $modalidad:'-'; ?>
 			<br>Fecha: <?php echo date('d-m-Y', $fechaTS); ?>
 		</h2>
 	</div><br>

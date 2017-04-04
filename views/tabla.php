@@ -70,12 +70,19 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 						$igual100 = 0;
 						$r50_100 = 0;
 						$r0_50 = 0;
+						$fechaURL = 0;
 						foreach( $noEstudiosPorDia AS $s ){
 							if( $periodo == 3 ){
 								$fecha = "0".$s['mes'];
+								$mes = $s['mes'];
+								$year = $s['year'];
+								$fechaURL = strtotime("$year-$mes-01");
+								$pUrl = 3;
 							}
-							else
+							else{
 								$fecha = date("Ymd", strtotime($s['fecha']));
+								$fechaURL = strtotime($s['fecha']);
+							}
 							$synapse = $s['noEstudios'];
 							$sumaSynapse += $synapse;
 							$espejo = $noEstudiosPorDiaEspejo[$fecha]['noEstudios'];
@@ -86,7 +93,7 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 							$r50_100 	= ( $parity > 49 && $parity < 100 ) ? ( $r50_100 + 1 ) : $r50_100;
 							$r0_50 		= ( ($parity >= 0 && $parity < 50) || $parity < 0 ) ? ( $r0_50 + 1 ) : $r0_50;
 							$classNivelAlerta = getClaseNivelAlerta( $parity );
-							$url = 'diferencias.php?t=3&m='.$modalidad.'&fecha='.strtotime($s['fecha']).'&proyecto='.$proyecto;
+							$url = 'diferencias.php?p='.$pUrl.'&t=3&m='.$modalidad.'&fecha='.$fechaURL.'&proyecto='.$proyecto;
 							echo "<td class='".$classNivelAlerta." celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'><a class='linkVerDifEst' href='".$url."' target='_blank'>".round($parity)."%</a></td>";
 						}
 					?>
@@ -194,14 +201,20 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					<?php 
 					$i = 0;
 					$sumaNoEstudiosModalidad = 0;
+					$fechaURL = 0;
 					foreach( $detallePorModalidad as $de ){
 						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : '';
 						if( $periodo == 3 ){
 							$fecha = "0".$de[$d['alias']]['mes'];
-							//var_dump($de[$d['alias']]['mes']);
+							$mes = $de[$d['alias']]['mes'];
+							$year = $de[$d['alias']]['year'];
+							$fechaURL = strtotime("$year-$mes-01");
+							$pUrl = 3;
 						}
-						else
+						else{
 							$fecha = date("Ymd", strtotime($de[$d['alias']]['fecha']));
+							$fechaURL = strtotime($de[$d['alias']]['fecha']);
+						}
 						$modalidad = $d['alias'];
 						$synapse = $de[$d['alias']]['noEstudios'];
 						$sumaSynapseM += $synapse;
@@ -214,7 +227,9 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 							$r0_50 		= ( ($parity >= 0 && $parity < 50) || $parity < 0 ) ? ( $r0_50 + 1 ) : $r0_50;
 						$classNivelAlerta = getClaseNivelAlerta( $parity );
 						//echo '<td class="'.$firtCell.' celdasNumeros bordesCeldasNumerosAbajo">'.$noEstudios.'</td>';
-						$url = 'diferencias.php?t=1&m='.$modalidad.'&fecha='.strtotime($de[$d['alias']]['fecha']).'&proyecto='.$proyecto;
+						
+						
+						$url = 'diferencias.php?p='.$pUrl.'&t=1&m='.$modalidad.'&fecha='.$fechaURL.'&proyecto='.$proyecto;
 						echo '<td class="'.$firtCell.' '.$classNivelAlerta.' nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft" style="border-left: none;"><a class="linkVerDifEst" href="'.$url.'" target="_blank">'.round($parity).'%</a></td>';
 						$sumaNoEstudiosModalidad += $de[$d['alias']]['noEstudios'];
 					}
@@ -316,6 +331,7 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					$i = 0;
 					$sumaNoEstudiosHospital = 0;
 					$espejo = $synapse = $sumaSynapse = $sumaEspejo = 0;
+					$fechaURL = 0;
 					foreach( $detallePorHospital as $deH ){
 						$firtCell = ( $i++ == 0 ) ? 'bordeLeft' : ''; //$detallePorHospital['2017-02-27']['ISEM01']['noEstudios']
 						//$noEstudios = ( isset( $deH[$h['clave']]['noEstudios'] ) ) ? number_format($deH[$h['clave']]['noEstudios']): '-';
@@ -331,9 +347,15 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 						
 						if( $periodo == 3 ){
 							$fecha = "0".$deH[$h['clave']]['mes'];
+							$mes = $deH[$h['clave']]['mes'];
+							$year = $deH[$h['clave']]['year'];
+							$fechaURL = strtotime("$year-$mes-01");
+							$pUrl = 3;
 						}
-						else
+						else{
 							$fecha = date("Ymd", strtotime($deH[$h['clave']]['fecha']));
+							$fechaURL = strtotime($deH[$h['clave']]['fecha']);
+						}
 						
 						$synapse = $deH[$h['clave']]['noEstudios'];
 						$sumaSynapse += $synapse;
@@ -345,7 +367,8 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 							$r50_100 	= ( $parity > 49 && $parity < 100 ) ? ( $r50_100 + 1 ) : $r50_100;
 							$r0_50 		= ( ($parity >= 0 && $parity < 50) || $parity < 0 ) ? ( $r0_50 + 1 ) : $r0_50;
 						$classNivelAlerta = getClaseNivelAlerta( $parity );
-						$url = 'diferencias.php?t=2&m='.$modalidad.'&fecha='.strtotime($deH[$h['clave']]['fecha']).'&proyecto='.$h['clave'];
+						
+						$url = 'diferencias.php?p='.$pUrl.'&t=2&m='.$modalidad.'&fecha='.$fechaURL.'&proyecto='.$h['clave'];
 						echo '<td class="'.$firtCell.' '.$classNivelAlerta.' nivelAlertaNormal celdasNumeros bordesCeldasNumeros bordeLeft" style="border-left: none;"><a class="linkVerDifEst" href="'.$url.'" target="_blank">'.round($parity).'%</a></td>';
 						$sumaNoEstudiosHospital += $deH[$h['clave']]['noEstudios'];
 					}

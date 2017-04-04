@@ -14,7 +14,23 @@ function __construct( $proyecto ) {
 	   $this->proyecto = $proyecto;
    }
 
-public function getFaltantesDbE_Synapse( $modalidad, $fechaTS ){
+public function getFaltantesDbE_Synapse( $modalidad, $fechaTS, $type, $periodo ){
+	$fechaIni = date("Y-m-d", $fechaTS);
+	if( $periodo == 3 )
+		$fechaFin = date("Y-m-d", strtotime("$fechaIni +1 month"));
+	else
+		$fechaFin = date("Y-m-d", strtotime("$fechaIni +1 day"));
+
+	$m = ( $type == 1 ) ? " modality LIKE '%".$modalidad."%' AND " : '';
+
+	echo $sql = "SELECT * FROM estudios WHERE ".$m." clave LIKE '%".$this->proyecto."%' AND study_Date_Time > '".$fechaIni."' AND study_Date_Time < '".$fechaFin."' AND enEspejo = 0 LIMIT 5000;";
+
+	DBO::select_db($this->db);
+	$a = DBO::getArray($sql);
+	return $a;
+}
+   
+/*public function getFaltantesDbE_Synapse( $modalidad, $fechaTS ){
 $fechaIni = date("Y-m-d", $fechaTS);
 $fechaFin = date("Y-m-d", strtotime("$fechaIni +1 day"));
 
@@ -32,7 +48,7 @@ WHERE ptr.modalidad LIKE '%".$modalidad."%' AND ptr.fecha_estudio > '".$fechaIni
 	DBO::select_db($this->db);
 	$a = DBO::getArray($sql);
 	return $a;
-}
+}*/
    
 public function getHospitales( $proyecto ){
 	$sql = "SELECT * FROM hospital.hospital WHERE clave LIKE '%".$proyecto."%' ORDER BY clave";
@@ -69,7 +85,7 @@ public function getNoEstudiosPorHospital( $fechaInicioTs, $fechaFinTs, $periodo 
 	$whereProyecto = ( $this->proyecto != '' ) ? " clave LIKE '%".$this->proyecto."%' " : '1';
 	
 	if( $periodo == 3 )
-		$sql = "SELECT Year(study_Date_Time) AS year, Month(study_Date_Time) AS mes, clave, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY Year(study_Date_Time), Month(study_Date_Time), clave ORDER BY year, mes";
+		echo $sql = "SELECT Year(study_Date_Time) AS year, Month(study_Date_Time) AS mes, clave, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY Year(study_Date_Time), Month(study_Date_Time), clave ORDER BY year, mes";
 	else
 		$sql = "SELECT DATE(study_Date_Time) AS fecha, clave, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY DATE(study_Date_Time), clave ORDER BY fecha";
 	
