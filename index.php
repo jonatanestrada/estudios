@@ -13,7 +13,7 @@ $diaSem = $diasSemana[date("N", strtotime('now -1 DAY'))];
 		
 		<script>
 			$(document).ready(function(){
-				getTableAjax( 'ISEM', 2 );
+				getTableAjax( 'ISEM', 1 );
 				
 				$("#boton").on( "click", function() {	 
 					$('.viewMore').toggle();
