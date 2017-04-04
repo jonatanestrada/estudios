@@ -80,10 +80,11 @@ public function getNoEstudios( $fechaInicioTs, $fechaFinTs, $periodo ){
 	$whereProyecto = ( $this->proyecto != '' ) ? " SITIO LIKE '%".$this->proyecto."%' " : '1';
 	
 	if( $periodo == 3 )
-		$sql = "SELECT SUBSTRING(consecutivo, 1, 4) as year, SUBSTRING(consecutivo, 5, 2) mes, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE SITIO LIKE '%ISEM%' AND consecutivo >= '20170101' AND consecutivo < '20170403' GROUP BY SUBSTRING(consecutivo, 1, 4), SUBSTRING(consecutivo, 5, 2)";
+		$sql = "SELECT SUBSTRING(consecutivo, 1, 4) as year, SUBSTRING(consecutivo, 5, 2) mes, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo < '".$fechaFin."' GROUP BY SUBSTRING(consecutivo, 1, 4), SUBSTRING(consecutivo, 5, 2)";
 	else
 		$sql = "SELECT consecutivo AS fecha, SUM(ESTUDIOS) AS noEstudios FROM productividad_ytd WHERE ".$whereProyecto." AND consecutivo >= '".$fechaInicio."' AND consecutivo < '".$fechaFin."' GROUP BY consecutivo";
 	DBO::select_db($this->db);
+	//echo $sql;
 	$a = DBO::getArray($sql);
 	
 	$estudios = array();
