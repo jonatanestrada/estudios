@@ -85,7 +85,7 @@ public function getNoEstudiosPorHospital( $fechaInicioTs, $fechaFinTs, $periodo 
 	$whereProyecto = ( $this->proyecto != '' ) ? " clave LIKE '%".$this->proyecto."%' " : '1';
 	
 	if( $periodo == 3 )
-		echo $sql = "SELECT Year(study_Date_Time) AS year, Month(study_Date_Time) AS mes, clave, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY Year(study_Date_Time), Month(study_Date_Time), clave ORDER BY year, mes";
+		$sql = "SELECT Year(study_Date_Time) AS year, Month(study_Date_Time) AS mes, clave, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY Year(study_Date_Time), Month(study_Date_Time), clave ORDER BY year, mes";
 	else
 		$sql = "SELECT DATE(study_Date_Time) AS fecha, clave, COUNT(*) AS noEstudios FROM estudios WHERE ".$whereProyecto." AND study_Date_Time > '".$fechaInicio."' AND study_Date_Time < '".$fechaFin."' GROUP BY DATE(study_Date_Time), clave ORDER BY fecha";
 	
