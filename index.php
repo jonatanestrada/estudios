@@ -53,7 +53,7 @@ $diaSem = $diasSemana[date("N", strtotime('now -1 DAY'))];
  
 	<body>
 		<img src='images/logo.png' style='float:right;'>
-		<div style='color: #595959; width: 300px;text-align: center;' >
+		<div style='color: #595959; width: 300px;text-align: center; display: inline-block;' >
 			<p style='font-weight: bold;font-size: 20px;margin-bottom: 0px;'>Ejercicio de Paridad Synapse - BDE</p>
 			<p style='margin-top: 5px;font-size: 23px;margin-bottom: 0px;'>
 				Proyecto: <select id='proyecto' onchange="getTableParidad();">
@@ -72,6 +72,44 @@ $diaSem = $diasSemana[date("N", strtotime('now -1 DAY'))];
 			<p style='margin-top: 0px;font-size: 20px;margin-bottom: 5px;'>Corte al <?php echo $diaSem.', '.$ayer; ?></p>
 		</div>
 
+		<div class = 'contentRangos' >
+			<div class = 'contentRango'>
+				<div class = 'nivelAlertaSobrepaso rangoTitle'>
+					100 >
+				</div>
+				<div class = 'rangoVal' id = 'mas100' >
+					0
+				</div>
+			</div>
+			
+			<div class = 'contentRango'>
+				<div class = 'nivelAlerta100 rangoTitle'>
+					100 =
+				</div>
+				<div class = 'rangoVal' id = 'igual100' >
+					0
+				</div>
+			</div>
+			
+			<div class = 'contentRango'>
+				<div class = 'nivelAlertaNormal rangoTitle'  >
+					50 - 100
+				</div>
+				<div class = 'rangoVal' id = 'r50_100'>
+					0
+				</div>
+			</div>
+			
+			<div class = 'contentRango'>
+				<div class = 'nivelAlertaMuyporDebajo rangoTitle'  >
+					0 - 50
+				</div>
+				<div class = 'rangoVal' id = 'r0_50' >
+					0
+				</div>
+			</div>
+		</div>
+		
 		<hr style='border-style: solid; border-color: #BBD78B; margin-top: 0px;margin-bottom: 15px;'>
 
 		<div style="text-align:center;display:none;'" id='divLoading'>

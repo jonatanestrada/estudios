@@ -115,12 +115,6 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 						echo '<td class="'.$classNivelAlerta.' bordes sinBordeAbajo celdasNumerosSolo1Col">'.round($paritySuma).'%</td>';
 					?>
 
-					<td style='width: 10px;'></td>
-					<td class="nivelAlertaSobrepaso bordes sinBordeAbajo celdasNumerosSolo1Col"  >100></td>
-					<td class="nivelAlerta100 bordes sinBordeAbajo celdasNumerosSolo1Col" >100=</td>
-					<td class="nivelAlertaNormal bordes sinBordeAbajo celdasNumerosSolo1Col" >50-100</td>
-					<td class="nivelAlertaMuyporDebajo bordes sinBordeAbajo celdasNumerosSolo1Col" >0-50</td>
-					
 				</tr>
 				
 				<tr class='viewMore'>
@@ -149,11 +143,6 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					<td></td>
 					<td class='bordes celdasNumerosSolo1Col'><?php echo number_format($sumaNoEstudios); ?></td>
 					
-					<td style='width: 10px;'></td>
-					<td class='bordes celdasNumerosSolo1Col' id='mas100'><?php echo $mas100; ?></td>
-					<td class='bordes celdasNumerosSolo1Col' id='igual100'><?php echo $igual100; ?></td>
-					<td class='bordes celdasNumerosSolo1Col' id='r50_100'><?php echo $r50_100; ?></td>
-					<td class='bordes celdasNumerosSolo1Col' id='r0_50'><?php echo $r0_50; ?></td>
 				</tr>
 				</tr>
 				

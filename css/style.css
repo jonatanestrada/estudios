@@ -7,11 +7,30 @@ table{
 	font-size: 13px;
 }
 
-.titleTable{	
-    background-color: #70AD47;
-	color: white;
-	text-align: center;
+.contentRangos{
+	display: inline-block; 	
+	float: right;
+	margin-right: 10px;
+}
 
+.contentRango{
+	border-style: solid; 
+	border-width: 1px; 
+	border-color: #BFBFBF;
+	width: 100px; 
+	display: inline-block;
+}
+
+.rangoTitle{
+	text-align: center;
+	background-color:#D9E2F3; 
+	padding: 10px; 
+	border-bottom: 1px #BFBFBF solid;
+}
+
+.rangoVal, .titleTable{
+	text-align: center; 
+	padding: 10px;
 }
 
 .bordes, .bordesCeldasNumeros, .bordesCeldasNumerosAbajo{
