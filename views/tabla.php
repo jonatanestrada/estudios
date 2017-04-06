@@ -99,8 +99,12 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 						
 					?>
 					
-					<?php if( $periodo == 3 ){
-							for( $z = $s['mes']; $z < 12; $z++ ): ?>
+					<?php if( $periodo == 3 || $periodo == 1 ){
+							$iniCont = ( $periodo == 3 ) ? $s['mes'] : date("d", strtotime($s['fecha']));							
+							$di = new DateTime('last day of this month');								
+							$finCont = ( $periodo == 3 ) ? 12 : $di->format('d');
+					
+							for( $z = $iniCont; $z < $finCont; $z++ ): ?>
 							<td class='nivelAlerta100 celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>%</td>
 					<?php endfor; }?>
 					
@@ -133,8 +137,12 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					}
 					?>
 					
-					<?php if( $periodo == 3 ){
-							for( $z = $s['mes']; $z < 12; $z++ ): ?>
+					<?php if( $periodo == 3 || $periodo == 1 ){
+							$iniCont = ( $periodo == 3 ) ? $s['mes'] : date("d", strtotime($s['fecha']));							
+							$di = new DateTime('last day of this month');								
+							$finCont = ( $periodo == 3 ) ? 12 : $di->format('d');
+					
+							for( $z = $iniCont; $z < $finCont; $z++ ): ?>
 							<td class=" celdasNumeros bordesCeldasNumerosAbajo">-</td>
 					<?php endfor; }?>
 					
@@ -163,8 +171,12 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					}
 					?>
 					
-					<?php if( $periodo == 3 ){
-							for( $z = $s['mes']; $z < 12; $z++ ): ?>
+					<?php if( $periodo == 3 || $periodo == 1 ){
+							$iniCont = ( $periodo == 3 ) ? $s['mes'] : date("d", strtotime($s['fecha']));							
+							$di = new DateTime('last day of this month');								
+							$finCont = ( $periodo == 3 ) ? 12 : $di->format('d');
+					
+							for( $z = $iniCont; $z < $finCont; $z++ ): ?>
 							<td class="celdasNumeros bordesCeldasNumerosAbajo">-</td>
 					<?php endfor; }?>
 					
@@ -254,8 +266,12 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					}
 					?>
 					
-					<?php if( $periodo == 3 ){
-							for( $z = $s['mes']; $z < 12; $z++ ): ?>
+					<?php if( $periodo == 3 || $periodo == 1 ){
+							$iniCont = ( $periodo == 3 ) ? $s['mes'] : date("d", strtotime($s['fecha']));							
+							$di = new DateTime('last day of this month');								
+							$finCont = ( $periodo == 3 ) ? 12 : $di->format('d');
+					
+							for( $z = $iniCont; $z < $finCont; $z++ ): ?>
 							<td class='nivelAlerta100 celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>%</td>
 					<?php endfor; }?>
 					
@@ -283,8 +299,12 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					}
 					?>
 					
-					<?php if( $periodo == 3 ){
-							for( $z = $s['mes']; $z < 12; $z++ ): ?>
+					<?php if( $periodo == 3 || $periodo == 1 ){
+							$iniCont = ( $periodo == 3 ) ? $s['mes'] : date("d", strtotime($s['fecha']));							
+							$di = new DateTime('last day of this month');								
+							$finCont = ( $periodo == 3 ) ? 12 : $di->format('d');
+					
+							for( $z = $iniCont; $z < $finCont; $z++ ): ?>
 							<td class=" celdasNumeros bordesCeldasNumerosAbajo">-</td>
 					<?php endfor; }?>
 					
@@ -307,8 +327,12 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					}
 					?>
 					
-					<?php if( $periodo == 3 ){
-							for( $z = $s['mes']; $z < 12; $z++ ): ?>
+					<?php if( $periodo == 3 || $periodo == 1 ){
+							$iniCont = ( $periodo == 3 ) ? $s['mes'] : date("d", strtotime($s['fecha']));							
+							$di = new DateTime('last day of this month');								
+							$finCont = ( $periodo == 3 ) ? 12 : $di->format('d');
+					
+							for( $z = $iniCont; $z < $finCont; $z++ ): ?>
 							<td class="celdasNumeros bordesCeldasNumerosAbajo">-</td>
 					<?php endfor; }?>
 					
@@ -411,8 +435,12 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					}
 					?>
 					
-					<?php if( $periodo == 3 ){
-							for( $z = $s['mes']; $z < 12; $z++ ): ?>
+					<?php if( $periodo == 3 || $periodo == 1 ){
+							$iniCont = ( $periodo == 3 ) ? $s['mes'] : date("d", strtotime($s['fecha']));							
+							$di = new DateTime('last day of this month');								
+							$finCont = ( $periodo == 3 ) ? 12 : $di->format('d');
+					
+							for( $z = $iniCont; $z < $finCont; $z++ ): ?>
 							<td class='nivelAlerta100 celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>%</td>
 					<?php endfor; }?>
 					
@@ -442,8 +470,12 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					}
 					?>
 					
-					<?php if( $periodo == 3 ){
-							for( $z = $s['mes']; $z < 12; $z++ ): ?>
+					<?php if( $periodo == 3 || $periodo == 1 ){
+							$iniCont = ( $periodo == 3 ) ? $s['mes'] : date("d", strtotime($s['fecha']));							
+							$di = new DateTime('last day of this month');								
+							$finCont = ( $periodo == 3 ) ? 12 : $di->format('d');
+					
+							for( $z = $iniCont; $z < $finCont; $z++ ): ?>
 							<td class='nivelAlerta100 celdasNumeros bordesCeldasNumeros bordeLeft' style='border-left: none;'>%</td>
 					<?php endfor; }?>
 					
@@ -468,8 +500,12 @@ $detallePorHospitalEspejo = $estudioEspejo->getDetallePorHospital( $fechaInicioT
 					}
 					?>
 					
-					<?php if( $periodo == 3 ){
-							for( $z = $s['mes']; $z < 12; $z++ ): ?>
+					<?php if( $periodo == 3 || $periodo == 1 ){
+							$iniCont = ( $periodo == 3 ) ? $s['mes'] : date("d", strtotime($s['fecha']));							
+							$di = new DateTime('last day of this month');								
+							$finCont = ( $periodo == 3 ) ? 12 : $di->format('d');
+					
+							for( $z = $iniCont; $z < $finCont; $z++ ): ?>
 							<td class="celdasNumeros bordesCeldasNumerosAbajo">-</td>
 					<?php endfor; }?>
 					
@@ -571,7 +607,8 @@ function getMeses( $fechaInicioTs, $fechaFinTs ){
 	for( $i = 0; $i <= $noDias; $i++ ){
 		$fechaI = strtotime ( '-'.$i.' month' , strtotime ( $fechaFin ) ) ;
 		//echo '<br>'.$fechaInicio = date ( 'Y-m-d' , $fechaInicio); 
-		$dia = date ( 'Y' , $fechaI);
+		//$dia = date ( 'Y' , $fechaI);
+		$dia = '';
 		$mes = date ( 'n' , $fechaI);
 		$dias[] = array( 'mes' => $meses[$mes], 'dia' => $dia );
 	}
