@@ -634,7 +634,10 @@ function getPeridoFechas( $periodo ){
 }
 
 function getPeridoFechasMesActual( $periodo ){ 
-	$fechaFinTs = strtotime('now');
+	//$fechaFinTs = strtotime('now');
+	$d = new DateTime('first day of next month');
+	$fechaFinTs = strtotime($d->format('Y-m-d'));
+	
 	$hoy = date("Y-m-d", $fechaFinTs);
 	$d = new DateTime('first day of this month');
 	$fechaInicioTs = strtotime($d->format('Y-m-d'));
